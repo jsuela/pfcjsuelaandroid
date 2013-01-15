@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">  
+
+	<LinearLayout android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<ImageView
+			android:contentDescription="@string/desc"
+			android:id="@+id/imagencita"
+			android:paddingTop="8dip"
+			android:paddingBottom="0dip"
+			android:layout_width="20dip"
+			android:layout_height="20dip"/>
+	       <TextView
+	           android:id="@+id/pregunta"
+	           android:layout_width="fill_parent"
+	           android:layout_height="wrap_content"
+	           android:textSize="16sp"
+	           android:textStyle="bold"
+	           android:paddingTop="6dip"
+	           android:paddingBottom="2dip" />
+	</LinearLayout>
+	
+	<TextView android:id="@+id/respuesta_dada"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:textStyle="bold"
+		android:textSize="12sp"
+		android:textColor="#ffffff"/>
+	
+	
+	<TextView
+	    android:id="@+id/respuesta"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:textColor="#ffffff"
+	    android:textSize="12sp"
+	    android:textStyle="bold" />
+
+</LinearLayout>
