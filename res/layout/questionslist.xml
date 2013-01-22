@@ -7,11 +7,20 @@
 		 Always give id value as list(@android:id/list)
 	-->
 	
+		<Button
+	    android:id="@+id/pregunta_extra"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:onClick="preguntaExtra"
+	    android:textColor="#ffffff"
+	    android:textStyle="bold" />
 
     <ListView
         android:id="@android:id/list"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+       	android:textSize="16sp"
+	    android:textStyle="bold"/>
 
 
 </LinearLayout>

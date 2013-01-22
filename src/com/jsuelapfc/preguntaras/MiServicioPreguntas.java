@@ -105,7 +105,8 @@ public class MiServicioPreguntas extends Service {
 					PendingIntent actividad = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class),0);
 					notification.setLatestEventInfo(this, "Tienes preguntas nuevas", "Ya dedicaste mucho tiempo al ocio...", actividad);
 					nm.notify(ID_NOTIFICATION1, notification);
-					
+					Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.jsuelapfc.preguntaras");
+					startActivity(launchIntent);
 				}else{
 			        //getting notification
 					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);

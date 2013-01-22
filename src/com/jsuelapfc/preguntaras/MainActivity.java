@@ -52,6 +52,10 @@ public class MainActivity extends TabActivity {
 	            .setIndicator("Done", 
 	            this.getResources().getDrawable(R.drawable.settings))
 	            .setContent(new Intent(this, Listing.class)));	
+		tabHost.addTab(tabHost.newTabSpec("Tips")
+	            .setIndicator("Tips", 
+	            this.getResources().getDrawable(R.drawable.settings))
+	            .setContent(new Intent(this, Tips.class)));	
 		/*tabHost.addTab(tabHost.newTabSpec("PreferencesDemo")
 	            .setIndicator("Consumidor", 
 	            this.getResources().getDrawable(R.drawable.settings))

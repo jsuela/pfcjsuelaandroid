@@ -4,6 +4,12 @@ package com.jsuelapfc.preguntaras;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -12,9 +18,12 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -45,10 +54,12 @@ public class QuestionsList extends ListActivity{
 	// contacts JSONArray
 	JSONArray preguntas = null;
 	
+    private Button btnDisplay;
+	
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.questions);
+	        setContentView(R.layout.questionslist);
 	 
 	        // Hashmap for ListView
 	        ArrayList<HashMap<String, String>> preguntasList = new ArrayList<HashMap<String, String>>();
@@ -106,8 +117,20 @@ public class QuestionsList extends ListActivity{
 	            e.printStackTrace();
 	        }	
 	        
+
+	        //Damos nombre al botón
+	        //el siguiente método se ejecutará cuando se presione el botón
+	        Button lblEnvResp = (Button) findViewById(R.id.pregunta_extra);
+	        lblEnvResp.setText("Pregunta extra");
+	        
+	        addListenerOnButton();
+	        
+	        
+	        
+	        
 	        // Updating parsed JSON data into ListView
 	        //Listado con respuestas incluidas:
+	        
 	        ListAdapter adapter = new SimpleAdapter(this, preguntasList,
 	        		R.layout.list_preguntas_item,
 	        		new String[] { TAG_FIELDS_PREGUNTA, TAG_FIELDS_RESPUESTA, TAG_FIELDS_RESPUESTA2, TAG_FIELDS_RESPUESTA3}, new int[] {
@@ -142,4 +165,66 @@ public class QuestionsList extends ListActivity{
 	            }
 	        });
 	    }
+	   
+		 public void addListenerOnButton() {
+			 
+				btnDisplay = (Button) findViewById(R.id.pregunta_extra);
+			 
+				btnDisplay.setOnClickListener(new OnClickListener() {
+			 
+					@Override
+					public void onClick(View v) {
+						pidePreguntaExtra();
+		         	};
+			 
+				});
+			 
+			  }
+		 
+			public void pidePreguntaExtra(){
+				String resultado;
+				
+				//primero pido pregunta al servidor, luego lanzo notificacion
+		        // getting new question
+		        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		        loginusuario = prefs.getString("username", "n/a");
+		        url = "http://10.0.2.2:1234/android/preguntaextra/"+loginusuario;	
+				try {
+					HttpClient client = new DefaultHttpClient();
+					String getURL = url;
+					HttpGet get = new HttpGet(getURL);
+					HttpResponse responseGet = client.execute(get);
+					HttpEntity resEntityGet = responseGet.getEntity();
+					if (resEntityGet != null) {
+						resultado = EntityUtils.toString(resEntityGet);
+						if (resultado.equals("ok")){
+					        //getting notification
+							finish();
+							Intent in = new Intent(getApplicationContext(), MainActivity.class);
+        					startActivity(in);
+							Toast.makeText(QuestionsList.this,"Pregunta añadida", Toast.LENGTH_SHORT).show();
+
+
+							
+						}else{
+							Toast.makeText(QuestionsList.this,"No hay más preguntas disponibles (de momento...)", Toast.LENGTH_SHORT).show();
+
+
+						}
+					} else {
+
+						Toast.makeText(QuestionsList.this,"Error al contactar con el servidor", Toast.LENGTH_SHORT).show();
+
+					}
+				} catch (Exception e) {
+					Log.i("ERROR", "CONECTION PROBLEM");
+					Toast.makeText(QuestionsList.this,"Error contactando con el servidor", Toast.LENGTH_SHORT).show();
+
+				}
+		        
+
+			}
+
+
+	   
 }
