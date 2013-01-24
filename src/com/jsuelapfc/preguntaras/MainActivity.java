@@ -41,21 +41,23 @@ public class MainActivity extends TabActivity {
 		final TabHost tabHost = getTabHost();
 		
 		tabHost.addTab(tabHost.newTabSpec("Ranking")
-            .setIndicator("Ranking", 
-            this.getResources().getDrawable(R.drawable.home))
-            .setContent(new Intent(this, Ranking.class)));	
+	            .setIndicator("Ranking", 
+	            this.getResources().getDrawable(R.drawable.ic_action_ranking))
+	            .setContent(new Intent(this, Ranking.class)));
 		tabHost.addTab(tabHost.newTabSpec("Preguntas")
 	            .setIndicator("To do", 
-	            this.getResources().getDrawable(R.drawable.question))
+	            this.getResources().getDrawable(R.drawable.ic_action_question))
 	            .setContent(new Intent(this, QuestionsList.class)));	
 		tabHost.addTab(tabHost.newTabSpec("Listado")
 	            .setIndicator("Done", 
-	            this.getResources().getDrawable(R.drawable.settings))
+	            this.getResources().getDrawable(R.drawable.ic_action_done))
 	            .setContent(new Intent(this, Listing.class)));	
 		tabHost.addTab(tabHost.newTabSpec("Tips")
 	            .setIndicator("Tips", 
-	            this.getResources().getDrawable(R.drawable.settings))
+	            this.getResources().getDrawable(R.drawable.ic_action_tips))
 	            .setContent(new Intent(this, Tips.class)));	
+
+
 		/*tabHost.addTab(tabHost.newTabSpec("PreferencesDemo")
 	            .setIndicator("Consumidor", 
 	            this.getResources().getDrawable(R.drawable.settings))

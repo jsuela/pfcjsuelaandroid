@@ -30,19 +30,19 @@ import android.util.Log;
 
 public class MiServicioPreguntas extends Service {
 	private Timer timer = new Timer();
-	private static final long UPDATE_INTERVAL = 5000;
+	private static final long UPDATE_INTERVAL = 5000000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList<String> list = new ArrayList<String>();
 
-	public String mensaje;
-	public String app;
-	public int contadorAppsOciosas;
-	public int limiteOcio = 2;
+	private String mensaje;
+	private String app;
+	private int contadorAppsOciosas;
+	private int limiteOcio = 2;
 	
 	private static final int ID_NOTIFICATION1 = 1;
 	private static final int ID_NOTIFICATION2 = 2;
 	
-	final Handler handler = new Handler();
+	private final Handler handler = new Handler();
 	
 	private String loginusuario;
     private SharedPreferences prefs;
@@ -54,9 +54,9 @@ public class MiServicioPreguntas extends Service {
 	private Timer timer2 = new Timer();
 	//24horas
 	private static final long UPDATE_INTERVAL2 = 86400000;
-	public String mensaje2;
-	public int limitePreguntasAlDia = 6;
-	public int numeroPreguntasRealizadas=0;
+	private String mensaje2;
+	private int limitePreguntasAlDia = 6;
+	private int numeroPreguntasRealizadas=0;
 	
 
 	public void onCreate() {

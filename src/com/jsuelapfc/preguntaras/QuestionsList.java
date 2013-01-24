@@ -14,9 +14,13 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -49,98 +53,126 @@ public class QuestionsList extends ListActivity{
 	
 	private String loginusuario;
     private SharedPreferences prefs;
-
+    
+	private JSONParser jParser;
+	private ArrayList<HashMap<String, String>> preguntasList;
 
 	// contacts JSONArray
 	JSONArray preguntas = null;
 	
     private Button btnDisplay;
+    private String resultado;
+    
+	private ProgressDialog pd;
+	
+	private String mensaje;
+	private final Handler handler = new Handler();
+    private Context mContext;
+    
+    private Button lblEnvResp;
+
 	
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.questionslist);
-	 
+
+	        mContext = this;
+
 	        // Hashmap for ListView
-	        ArrayList<HashMap<String, String>> preguntasList = new ArrayList<HashMap<String, String>>();
+	        preguntasList = new ArrayList<HashMap<String, String>>();
 	 
 	        // Creating JSON Parser instance
-	        JSONParser jParser = new JSONParser();
+	        jParser = new JSONParser();
 	 
 	        // getting JSON string from URL
 	        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	        loginusuario = prefs.getString("username", "n/a");
 	        url = "http://10.0.2.2:1234/android/pidepreguntas/"+loginusuario;	
 	        
-	        JSONObject json = jParser.getJSONFromUrl(url);
+	    	pd = ProgressDialog.show(QuestionsList.this, "Preguntas", "Cargando...", true, false);	
 
-	        try {
-	            // Getting Array of Contacts
-	            preguntas = json.getJSONArray(TAG_PREGUNTAS);
-	 
-	            // looping through All Contacts
-	            for(int i = 0; i < preguntas.length(); i++){
-	                JSONObject c = preguntas.getJSONObject(i);
-	 
-	                // Storing each json item in variable
-	                String pk = c.getString(TAG_PK);
-	                String model = c.getString(TAG_MODEL);
-	         
-	                // Respuestas is agin JSON Object
-	                JSONObject fields = c.getJSONObject(TAG_FIELDS);
-	                String pregunta = fields.getString(TAG_FIELDS_PREGUNTA);  
-	                String respuesta2 = fields.getString(TAG_FIELDS_RESPUESTA2);	    	    
-	    	        String respuesta3 = fields.getString(TAG_FIELDS_RESPUESTA3);
-	                String respuesta = fields.getString(TAG_FIELDS_RESPUESTA);  
+		    new MiTarea().execute(url);
+	   }
+	   
+	   private class MiTarea extends AsyncTask<String, ListAdapter, ArrayList<HashMap<String, String>> >{
 
-	                String usuario_pendiente = fields.getString(TAG_FIELDS_USUARIO_PENDIENTE);	
-	                
-	                // creating new HashMap
-	                HashMap<String, String> map = new HashMap<String, String>();
-	 
-	                // adding each child node to HashMap key => value
-	                map.put(TAG_PK, pk);
-	                map.put(TAG_MODEL, model);
-	                map.put(TAG_FIELDS_PREGUNTA, pregunta);
-	                map.put(TAG_FIELDS_RESPUESTA2, respuesta2);
-	                map.put(TAG_FIELDS_RESPUESTA3, respuesta3);
-	                map.put(TAG_FIELDS_RESPUESTA, respuesta);
-	                map.put(TAG_FIELDS_USUARIO_PENDIENTE, usuario_pendiente);
-	 
-	                // adding HashList to ArrayList
-	               preguntasList.add(map);
-	            }
-	        } catch (Exception e) {
-	        	Toast.makeText(QuestionsList.this,
-         				"Error al contactar con el servidor, inténtelo más tarde",
-         				Toast.LENGTH_SHORT).show();
-	            e.printStackTrace();
-	        }	
+	          protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
+
+	        	  try {
+				        JSONObject json = jParser.getJSONFromUrl(url);
+			            // Getting Array of Contacts
+			            preguntas = json.getJSONArray(TAG_PREGUNTAS);
+			 
+			            // looping through All Contacts
+			            for(int i = 0; i < preguntas.length(); i++){
+			                JSONObject c = preguntas.getJSONObject(i);
+			 
+			                // Storing each json item in variable
+			                String pk = c.getString(TAG_PK);
+			                String model = c.getString(TAG_MODEL);
+			         
+			                // Respuestas is agin JSON Object
+			                JSONObject fields = c.getJSONObject(TAG_FIELDS);
+			                String pregunta = fields.getString(TAG_FIELDS_PREGUNTA);  
+			                String respuesta2 = fields.getString(TAG_FIELDS_RESPUESTA2);	    	    
+			    	        String respuesta3 = fields.getString(TAG_FIELDS_RESPUESTA3);
+			                String respuesta = fields.getString(TAG_FIELDS_RESPUESTA);  
+		
+			                String usuario_pendiente = fields.getString(TAG_FIELDS_USUARIO_PENDIENTE);	
+			                
+			                // creating new HashMap
+			                HashMap<String, String> map = new HashMap<String, String>();
+			 
+			                // adding each child node to HashMap key => value
+			                map.put(TAG_PK, pk);
+			                map.put(TAG_MODEL, model);
+			                map.put(TAG_FIELDS_PREGUNTA, pregunta);
+			                map.put(TAG_FIELDS_RESPUESTA2, respuesta2);
+			                map.put(TAG_FIELDS_RESPUESTA3, respuesta3);
+			                map.put(TAG_FIELDS_RESPUESTA, respuesta);
+			                map.put(TAG_FIELDS_USUARIO_PENDIENTE, usuario_pendiente);
+			 
+			                // adding HashList to ArrayList
+			               preguntasList.add(map);
+			               
+			            }
+			        } catch (Exception e) {
+    		        	mensaje = "Error, no se puede contactar con el servidor";
+    		            handler.post(toast);
+			            e.printStackTrace();
+			        }	
+			        
+			
+
+
+	        return preguntasList;
 	        
+	        
+	        
+	          }
+	        protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
 
 	        //Damos nombre al botón
 	        //el siguiente método se ejecutará cuando se presione el botón
-	        Button lblEnvResp = (Button) findViewById(R.id.pregunta_extra);
+	        lblEnvResp = (Button) findViewById(R.id.pregunta_extra);
 	        lblEnvResp.setText("Pregunta extra");
 	        
 	        addListenerOnButton();
 	        
-	        
-	        
-	        
 	        // Updating parsed JSON data into ListView
 	        //Listado con respuestas incluidas:
-	        
-	        ListAdapter adapter = new SimpleAdapter(this, preguntasList,
+	        ListAdapter adapter = new SimpleAdapter(QuestionsList.this, preguntasList,
 	        		R.layout.list_preguntas_item,
 	        		new String[] { TAG_FIELDS_PREGUNTA, TAG_FIELDS_RESPUESTA, TAG_FIELDS_RESPUESTA2, TAG_FIELDS_RESPUESTA3}, new int[] {
                     R.id.pregunta, R.id.respuesta, R.id.respuesta2, R.id.respuesta3});
 	        
 	        setListAdapter(adapter);
+	       	pd.dismiss();
 	
 	        // selecting single ListView item
 	        ListView lv = getListView();
-	 
+
 	        // Launching new screen on Selecting Single ListItem
 	        lv.setOnItemClickListener(new OnItemClickListener() {
 	        	
@@ -164,8 +196,10 @@ public class QuestionsList extends ListActivity{
 	                    finish();
 	            }
 	        });
-	    }
-	   
+	        }
+	     }
+	             
+	           
 		 public void addListenerOnButton() {
 			 
 				btnDisplay = (Button) findViewById(R.id.pregunta_extra);
@@ -182,49 +216,68 @@ public class QuestionsList extends ListActivity{
 			  }
 		 
 			public void pidePreguntaExtra(){
-				String resultado;
 				
 				//primero pido pregunta al servidor, luego lanzo notificacion
 		        // getting new question
-		        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		        prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
 		        loginusuario = prefs.getString("username", "n/a");
-		        url = "http://10.0.2.2:1234/android/preguntaextra/"+loginusuario;	
-				try {
-					HttpClient client = new DefaultHttpClient();
-					String getURL = url;
-					HttpGet get = new HttpGet(getURL);
-					HttpResponse responseGet = client.execute(get);
-					HttpEntity resEntityGet = responseGet.getEntity();
-					if (resEntityGet != null) {
-						resultado = EntityUtils.toString(resEntityGet);
-						if (resultado.equals("ok")){
-					        //getting notification
-							finish();
-							Intent in = new Intent(getApplicationContext(), MainActivity.class);
-        					startActivity(in);
-							Toast.makeText(QuestionsList.this,"Pregunta añadida", Toast.LENGTH_SHORT).show();
+		        url = "http://10.0.2.2:1234/android/preguntaextra/"+loginusuario;
+		        
+	            final ProgressDialog pd1 = ProgressDialog.show(QuestionsList.this, "Preguntas", "Cargando...", true, false);
 
-
-							
-						}else{
-							Toast.makeText(QuestionsList.this,"No hay más preguntas disponibles (de momento...)", Toast.LENGTH_SHORT).show();
-
-
+	    		new Thread(new Runnable(){
+	    			@Override
+	        		public void run(){
+		        
+						try {
+							HttpClient client = new DefaultHttpClient();
+							String getURL = url;
+							HttpGet get = new HttpGet(getURL);
+							HttpResponse responseGet = client.execute(get);
+							HttpEntity resEntityGet = responseGet.getEntity();
+							if (resEntityGet != null) {
+								resultado = EntityUtils.toString(resEntityGet);
+								if (resultado.equals("ok")){
+							        //getting notification
+									finish();
+									Intent in = new Intent(getApplicationContext(), MainActivity.class);
+		        					startActivity(in);
+		        		        	mensaje = "Pregunta añadida";
+		        		            handler.post(toast);
+		
+									
+								}else{
+		        		        	mensaje = "No hay más preguntas disponibles (de momento...)";
+		        		            handler.post(toast);
+		
+								}
+							} else {
+		
+	        		        	mensaje = "Error al contactar con el servidor";
+	        		            handler.post(toast);		
+							}
+						} catch (Exception e) {
+							Log.i("ERROR", "CONECTION PROBLEM");
+        		        	mensaje = "No se puede contactar con el servidor";
+        		            handler.post(toast);
+		
 						}
-					} else {
-
-						Toast.makeText(QuestionsList.this,"Error al contactar con el servidor", Toast.LENGTH_SHORT).show();
-
-					}
-				} catch (Exception e) {
-					Log.i("ERROR", "CONECTION PROBLEM");
-					Toast.makeText(QuestionsList.this,"Error contactando con el servidor", Toast.LENGTH_SHORT).show();
-
-				}
+					    pd1.dismiss();
+	    			}
+	     		}).start();
 		        
 
 			}
+         	final Runnable toast = new Runnable(){
+         		public void run(){
+             		Toast.makeText(mContext,
+             				mensaje,
+             				Toast.LENGTH_SHORT).show();
 
+         		}
+         	};
 
+	     }
 	   
-}
+
+	  

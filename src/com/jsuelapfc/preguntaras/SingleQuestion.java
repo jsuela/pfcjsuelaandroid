@@ -48,7 +48,7 @@ public class SingleQuestion extends Activity {
 	private static final String TAG_FIELDS_RESPUESTA2 = "respuesta2";
 	private static final String TAG_FIELDS_RESPUESTA3 = "respuesta3";
 	private String mensaje;
-	final Handler handler = new Handler();
+	private final Handler handler = new Handler();
 	
     private SharedPreferences prefs;
 	private String loginusuario;
@@ -208,11 +208,6 @@ public class SingleQuestion extends Activity {
                  		}
   
              		}).start();		
-					
-									
-
-
-					
 					
                     /*utilizamos finish para que al lanzar una nueva activity el usuario
                     no pueda volver hacia atrás*/

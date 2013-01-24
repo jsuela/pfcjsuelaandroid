@@ -7,7 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -24,73 +29,117 @@ public class Tips extends ListActivity{
 
 	private static final String TAG_FIELDS = "fields";
 	private static final String TAG_FIELDS_LECCION = "leccion";
-
+	
+	private JSONParser jParser;
+	private ArrayList<HashMap<String, String>> tipsList;
 
 	// contacts JSONArray
-	JSONArray tips = null;
+	private JSONArray tips = null;
+
+	private ProgressDialog pd;
 	
+	private String mensaje;
+	private final Handler handler = new Handler();
+    private Context mContext;
+
+
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.questions);
 
+	        mContext = this;
+
 	        // Hashmap for ListView
-	        ArrayList<HashMap<String, String>> tipsList = new ArrayList<HashMap<String, String>>();
+	        tipsList = new ArrayList<HashMap<String, String>>();
 	 
 	        // Creating JSON Parser instance
-	        JSONParser jParser = new JSONParser();
+	        jParser = new JSONParser();
 	 
 	        // getting JSON string from URL
 	        url = "http://10.0.2.2:1234/android/tips";	
-	        
-	        JSONObject json = jParser.getJSONFromUrl(url);
 
-	        try {
-	            // Getting Array of Contacts
-	            tips = json.getJSONArray(TAG_TIPS);
-	 
-	            // looping through All Contacts
-	            for(int i = 0; i < tips.length(); i++){
-	                JSONObject c = tips.getJSONObject(i);
-	 
-	                // Storing each json item in variable
-	                String pk = c.getString(TAG_PK);
-	                String model = c.getString(TAG_MODEL);
-	         
-	                // Respuestas is agin JSON Object
-	                JSONObject fields = c.getJSONObject(TAG_FIELDS);
-	                String leccion = fields.getString(TAG_FIELDS_LECCION);  
- 	    
-	  	                
-	                
-	                // creating new HashMap
-	                HashMap<String, String> map = new HashMap<String, String>();
-	 
-	                // adding each child node to HashMap key => value
-	                map.put(TAG_PK, pk);
-	                map.put(TAG_MODEL, model);
-	                map.put(TAG_FIELDS_LECCION, leccion);
-
-	            	 
-	                // adding HashList to ArrayList
-	               tipsList.add(map); 
-	            } 
-	        } catch (Exception e) {
-	        	Toast.makeText(Tips.this,
-         				"Error al contactar con el servidor, inténtelo más tarde",
-         				Toast.LENGTH_SHORT).show();
-	            e.printStackTrace();
-	        }	
-	          
-	        // Updating parsed JSON data into ListView
-	        //Listado con respuestas incluidas:
-	        ListAdapter adapter = new SimpleAdapter(this, tipsList,
-	        		R.layout.list_tips_item,
-	        		new String[] { TAG_FIELDS_LECCION}, new int[] {
-                    R.id.tips});
+	      //Creamos una nueva instancia y llamamos al método ejecutar
+	      //pasándole el string.
 	        
-	        setListAdapter(adapter);
-		        
+	        
+	    	pd = ProgressDialog.show(Tips.this, "Preguntas", "Cargando...", true, false);	
+
+	      new MiTarea().execute(url);
+        
 	    }
+
+	     private class MiTarea extends AsyncTask<String, ListAdapter, ArrayList<HashMap<String, String>> >{
+
+	          protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
+			        try {
+
+			        	
+				        JSONObject json = jParser.getJSONFromUrl(url);
+			            // Getting Array of Contacts
+			            tips = json.getJSONArray(TAG_TIPS);
+			 
+			            // looping through All Contacts
+			            for(int i = 0; i < tips.length(); i++){
+			                JSONObject c = tips.getJSONObject(i);
+			 
+			                // Storing each json item in variable
+			                String pk = c.getString(TAG_PK);
+			                String model = c.getString(TAG_MODEL);
+			         
+			                // Respuestas is agin JSON Object
+			                JSONObject fields = c.getJSONObject(TAG_FIELDS);
+			                String leccion = fields.getString(TAG_FIELDS_LECCION);  
+		 	    
+			  	                
+			                
+			                // creating new HashMap
+			                HashMap<String, String> map = new HashMap<String, String>();
+			 
+			                // adding each child node to HashMap key => value
+			                map.put(TAG_PK, pk);
+			                map.put(TAG_MODEL, model);
+			                map.put(TAG_FIELDS_LECCION, leccion);
+			                
+			            	 
+			                // adding HashList to ArrayList
+			               tipsList.add(map); 
+			               
+			            } 
+			        } catch (Exception e) {
+    		        	mensaje = "Ha ocurrido un error...no se puede contactar con el servidor";
+    		            handler.post(toast);
+			            e.printStackTrace();
+
+			        }	
+
+	         
+			        // Updating parsed JSON data into ListView
+		            Log.i("TIPs", Integer.toString(Thread.activeCount()));
+			        Log.i("TIPs sixe2", Integer.toString(tipsList.size()));
+					return tipsList;
+
+	          }
+
+	          protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
+
+	        	  ListAdapter adapter = new SimpleAdapter(Tips.this, result,
+	  	        		R.layout.list_tips_item,
+	  	        		new String[] { TAG_FIELDS_LECCION}, new int[] {
+	                      R.id.tips});
+	  	        
+	  	        setListAdapter(adapter);
+	  	        
+	        	 pd.dismiss();
+	          }
+	    }
+      	final Runnable toast = new Runnable(){
+     		public void run(){
+         		Toast.makeText(mContext,
+         				mensaje,
+         				Toast.LENGTH_SHORT).show();
+
+     		}
+     	};
 
 }

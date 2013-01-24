@@ -30,12 +30,13 @@ import android.widget.Toast;
 public class Login extends Activity {
     /** Called when the activity is first created. */
 	
-    private Context mContext;
+
     private SharedPreferences prefs;
     private EditText etusuario, etpassword;
 	private String loginusuario, loginpassword;
-	public String mensaje = "Incorrecto";
-	final Handler handler = new Handler();
+	private String mensaje = "Incorrecto";
+	private final Handler handler = new Handler();
+    private Context mContext;
     
     @Override
     public void onCreate(Bundle savedInstanceState){

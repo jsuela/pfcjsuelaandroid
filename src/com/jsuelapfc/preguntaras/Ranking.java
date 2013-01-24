@@ -2,21 +2,16 @@ package com.jsuelapfc.preguntaras;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import android.app.ListActivity;
-import android.content.ComponentName;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
+import android.os.Handler;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -36,84 +31,125 @@ public class Ranking extends ListActivity{
 	private static final String TAG_FIELDS_USUARIO = "usuario";
 
 	//servicio
-	private MiServicioPreguntas s;
+	/*private MiServicioPreguntas s;
 	private ArrayList<String> values;
-	private ArrayAdapter<String> adapter;
-
-
+	private ArrayAdapter<String> adapter;*/
+	private JSONParser jParser;
+	private ArrayList<HashMap<String, String>> puntosList;
 
 	// contacts JSONArray
-	JSONArray puntos = null;
+	private JSONArray puntos = null;
+	
+	private ProgressDialog pd;
+	
+	private String mensaje;
+	private final Handler handler = new Handler();
+    private Context mContext;
+	
 	
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.questions);
+	        mContext = this;
+
 	        //Llamamos al servicio
-			doBindService();
+			//doBindService();
 	 
 	        // Hashmap for ListView
-	        ArrayList<HashMap<String, String>> puntosList = new ArrayList<HashMap<String, String>>();
+	        puntosList = new ArrayList<HashMap<String, String>>();
 	 
 	        // Creating JSON Parser instance
-	        JSONParser jParser = new JSONParser();
+	        jParser = new JSONParser();
 	 
 	        // getting JSON string from URL
 	        url = "http://10.0.2.2:1234/android/clasificacion";	
 	        
-	        JSONObject json = jParser.getJSONFromUrl(url);
+	    	pd = ProgressDialog.show(Ranking.this, "Preguntas", "Cargando...", true, false);	
 
-	        try {
-	            // Getting Array of Contacts
-	            puntos = json.getJSONArray(TAG_PUNTOS);
-	 
-	            // looping through All Contacts
-	            for(int i = 0; i < puntos.length(); i++){
-	                JSONObject c = puntos.getJSONObject(i);
-	 
-	                // Storing each json item in variable
-	                String pk = c.getString(TAG_PK);
-	                String model = c.getString(TAG_MODEL);
-	         
-	                // Respuestas is agin JSON Object
-	                JSONObject fields = c.getJSONObject(TAG_FIELDS);
-	                String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
-	                String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
-	  	                
-	                
-	                // creating new HashMap
-	                HashMap<String, String> map = new HashMap<String, String>();
-	 
-	                // adding each child node to HashMap key => value
-	                map.put(TAG_PK, pk);
-	                map.put(TAG_MODEL, model);
-	                map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
-	                map.put(TAG_FIELDS_USUARIO, usuario);
-	            	 
-	                // adding HashList to ArrayList
-	               puntosList.add(map); 
-	            } 
-	        } catch (Exception e) {
-	        	Toast.makeText(Ranking.this,
-         				"Error al contactar con el servidor, inténtelo más tarde",
-         				Toast.LENGTH_SHORT).show();
-	            e.printStackTrace();
-	        }	
-	          
-	        // Updating parsed JSON data into ListView
-	        //Listado con respuestas incluidas:
-	        ListAdapter adapter = new SimpleAdapter(this, puntosList,
+		    new MiTarea().execute(url);
+	   }
+	   
+	     private class MiTarea extends AsyncTask<String, ListAdapter, ArrayList<HashMap<String, String>> >{
+
+
+	          protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
+
+			        try {
+				        JSONObject json = jParser.getJSONFromUrl(url);
+			            // Getting Array of Contacts
+			            puntos = json.getJSONArray(TAG_PUNTOS);
+			 
+			            // looping through All Contacts
+			            for(int i = 0; i < puntos.length(); i++){
+			                JSONObject c = puntos.getJSONObject(i);
+			 
+			                // Storing each json item in variable
+			                String pk = c.getString(TAG_PK);
+			                String model = c.getString(TAG_MODEL);
+			         
+			                // Respuestas is agin JSON Object
+			                JSONObject fields = c.getJSONObject(TAG_FIELDS);
+			                String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
+			                String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
+			  	                
+			                
+			                // creating new HashMap
+			                HashMap<String, String> map = new HashMap<String, String>();
+			 
+			                // adding each child node to HashMap key => value
+			                map.put(TAG_PK, pk);
+			                map.put(TAG_MODEL, model);
+			                map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
+			                map.put(TAG_FIELDS_USUARIO, usuario);
+			            	  
+			                // adding HashList to ArrayList
+			               puntosList.add(map); 
+			            } 
+			        } catch (Exception e) {
+        				mensaje = "No se puede conectar con el servidor. Inténtelo más tarde";
+        			 
+        				handler.post(toast);
+			            e.printStackTrace();
+			        }	
+					return puntosList;
+	          }
+
+          protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
+  	        // Updating parsed JSON data into ListView
+	        ListAdapter adapter = new SimpleAdapter(Ranking.this, puntosList,
 	        		R.layout.list_puntos_item,
 	        		new String[] { TAG_FIELDS_PUNTOS, TAG_FIELDS_USUARIO}, new int[] {
                     R.id.puntos, R.id.usuario});
 	        
 	        setListAdapter(adapter);
-	
+  	        
+        	 pd.dismiss();
+          }
+	     }
+	     
+      	final Runnable toast = new Runnable(){
+     		public void run(){
+         		Toast.makeText(mContext,
+         				mensaje,
+         				Toast.LENGTH_SHORT).show();
 
-	 
-	        
-	    }
-		void doBindService() {
+     		}
+     	};
+	     
+}
+   
+	/*
+	 * 
+	 *    
+	 *    
+	 *    
+	 *    
+	 *    
+	 *    
+	 *    SERVICIO
+	 */
+		/*void doBindService() {
 			Log.i("Service JAVI", "entro en doBindService");
 			getApplicationContext().bindService(new Intent(this, MiServicioPreguntas.class), mConnection,
 					Context.BIND_AUTO_CREATE);
@@ -143,5 +179,4 @@ public class Ranking extends ListActivity{
 				values.addAll(wordList);
 				adapter.notifyDataSetChanged();
 			}
-		}
-}
+		}*/
