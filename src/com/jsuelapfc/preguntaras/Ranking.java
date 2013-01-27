@@ -1,14 +1,20 @@
 package com.jsuelapfc.preguntaras;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.app.AlarmManager;
 import android.app.ListActivity;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -55,6 +61,15 @@ public class Ranking extends ListActivity{
 
 	        //Llamamos al servicio
 			//doBindService();
+	        
+	        Intent intent = new Intent(this, MiServicioPreguntas.class);
+	        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
+
+	        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			Calendar cal1 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
+
+			// Start every 30 seconds
+	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 60*1000, pintent); 
 	 
 	        // Hashmap for ListView
 	        puntosList = new ArrayList<HashMap<String, String>>();

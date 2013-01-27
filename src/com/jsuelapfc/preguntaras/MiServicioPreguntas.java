@@ -22,15 +22,17 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 public class MiServicioPreguntas extends Service {
 	private Timer timer = new Timer();
-	private static final long UPDATE_INTERVAL = 5000000;
+	private static final long UPDATE_INTERVAL = 5000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList<String> list = new ArrayList<String>();
 
@@ -47,6 +49,8 @@ public class MiServicioPreguntas extends Service {
 	private String loginusuario;
     private SharedPreferences prefs;
     
+
+    
 	// url to make request
 	private static String url;
 	
@@ -56,16 +60,28 @@ public class MiServicioPreguntas extends Service {
 	private static final long UPDATE_INTERVAL2 = 86400000;
 	private String mensaje2;
 	private int limitePreguntasAlDia = 6;
-	private int numeroPreguntasRealizadas=0;
+	private int numeroPreguntasRealizadas;
+	
+	private Editor edit;
 	
 
 	public void onCreate() {
 		super.onCreate();
+		Log.i("*******", "entor en oncreate");
+		Toast.makeText(getApplicationContext(),
+ 				"¡oncreate mi servicio",
+ 				Toast.LENGTH_SHORT).show();
 		pollForUpdates();
+		
+
+		
 		//controlaremos el min y max de preguntas
-		checkNumberOfQuestions();
+		//checkNumberOfQuestions();
 		
 	}
+	
+
+	
 	public String miraTasks(){
 		
     	ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
@@ -124,13 +140,13 @@ public class MiServicioPreguntas extends Service {
 
 			}
 		} catch (Exception e) {
-			Log.i("ERROR", "CONECTION PROBLEM");
+			Log.i("ERROR", "*******CONECTION PROBLEM********");
 		}
         
 
 	}
 	
-	private void checkNumberOfQuestions() {
+	/*private void checkNumberOfQuestions() {
 		timer2.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -152,7 +168,7 @@ public class MiServicioPreguntas extends Service {
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
 
 	}
-	
+	*/
 	
 	private void pollForUpdates() {
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -162,21 +178,39 @@ public class MiServicioPreguntas extends Service {
 	    		Log.i("NQUEST", "numeropregrealizadas"
 	    				+ numeroPreguntasRealizadas);
 
-	    		/*mensaje = tarea.split("[.]")[1];*/
-	    		/* Pra mostrar en un toast la tarea
-	    		handler.post(toast);*/
+	    		mensaje = tarea.split("[.]")[1];
+	    		/// Pra mostrar en un toast la tarea
+	    		handler.post(toast);
 	    		app = tarea.split("[.]")[1];
+	    		
+	            prefs = PreferenceManager.getDefaultSharedPreferences(MiServicioPreguntas.this);
+	    		//Obtenemos los valores de shared preferences
+	    		contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
+	    		numeroPreguntasRealizadas = prefs.getInt("numeroPreguntasRealizadas", 0);	
+	    		//editor para posteriormente cambair valores
+				
+	    		edit = prefs.edit();
+	    		
+	    		
 	    		if ((app.equals("facebook")) || (app.equals("instagram")) || (app.equals("clau"))|| (app.equals("twitter"))){
 	    			contadorAppsOciosas++;
+	    			edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
+					edit.commit();
+	    			//contadorAppsOciosas++;
 	    		}
 	    		if ((contadorAppsOciosas == limiteOcio) && (numeroPreguntasRealizadas < limitePreguntasAlDia)){
-	    			lanzaNotificacion();
+	    			/*lanzaNotificacion();
 	    			contadorAppsOciosas=0;
-	    			numeroPreguntasRealizadas++;
+	    			numeroPreguntasRealizadas++;*/
+	    			contadorAppsOciosas=0;
+					edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
+					numeroPreguntasRealizadas++;
+					edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
+					edit.commit();
 	    		}
 	    			
 	        	
-
+	    		Log.i("***MISERVICIOPREGUNTAS", "Comenzamos");
 			}
 
 		}, 0, UPDATE_INTERVAL);
@@ -186,11 +220,14 @@ public class MiServicioPreguntas extends Service {
 
 	@Override
 	public void onDestroy() {
-		super.onDestroy();
+		//super.onDestroy();
+		mensaje = "PArando servicio";
+		/// Pra mostrar en un toast la tarea
+		handler.post(toast);
 		if (timer != null) {
-			timer.cancel();
+			//timer.purge();
 		}
-		Log.i(getClass().getSimpleName(), "Timer stopped.");
+		Log.i(getClass().getSimpleName(), "Timer stopped");
 
 	}
 
@@ -211,4 +248,13 @@ public class MiServicioPreguntas extends Service {
 	public List<String> getWordList() {
 		return list;
 	}
+	
+	final Runnable toast = new Runnable(){
+ 		public void run(){
+     		Toast.makeText(MiServicioPreguntas.this,
+     				mensaje,
+     				Toast.LENGTH_SHORT).show();
+
+ 		}
+ 	};
 }

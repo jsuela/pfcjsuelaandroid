@@ -37,6 +37,7 @@
         <activity android:name=".Listing"></activity>
         <service android:name=".MiServicioPreguntas"></service>
         <activity android:name=".Tips"></activity>
+        <activity android:name=".Refresh"></activity>
         <activity android:name=".SingleQuestion" android:configChanges="keyboardHidden|orientation"></activity>  
     </application>
 

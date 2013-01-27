@@ -61,7 +61,7 @@ public class Login extends Activity {
 		
 		
 		//Comprobamos si ya ha habido login, y si es así saltamos a la pantalla principal
-		if (!loginusuario.equals("n/a")){
+		if (loginusuario.equals("n/a")){
      		Toast.makeText(mContext,
      				"¡Hola " + loginusuario+"!",
      				Toast.LENGTH_SHORT).show();

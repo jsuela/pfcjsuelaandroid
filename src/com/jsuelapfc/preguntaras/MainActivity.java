@@ -56,6 +56,10 @@ public class MainActivity extends TabActivity {
 	            .setIndicator("Tips", 
 	            this.getResources().getDrawable(R.drawable.ic_action_tips))
 	            .setContent(new Intent(this, Tips.class)));	
+		tabHost.addTab(tabHost.newTabSpec("Refresh")
+	            .setIndicator("Refresh", 
+	            this.getResources().getDrawable(R.drawable.ic_action_example))
+	            .setContent(new Intent(this, Refresh.class)));
 
 
 		/*tabHost.addTab(tabHost.newTabSpec("PreferencesDemo")
