@@ -35,6 +35,7 @@ public class SingleQuestion extends Activity {
 	
 	
     private TextView lblName;
+    private TextView lblName2;
     /*private Button lblEnvResp;
     private RadioButton lblResp,lblResp2, lblResp3;*/
     
@@ -47,6 +48,7 @@ public class SingleQuestion extends Activity {
 	private static final String TAG_FIELDS_RESPUESTA = "respuesta";
 	private static final String TAG_FIELDS_RESPUESTA2 = "respuesta2";
 	private static final String TAG_FIELDS_RESPUESTA3 = "respuesta3";
+	private static final String TAG_FIELDS_TAG = "tag";
 	private String mensaje;
 	private final Handler handler = new Handler();
 	
@@ -68,15 +70,18 @@ public class SingleQuestion extends Activity {
         String resp = in.getStringExtra(TAG_FIELDS_RESPUESTA);
         String resp2 = in.getStringExtra(TAG_FIELDS_RESPUESTA2);
         String resp3 = in.getStringExtra(TAG_FIELDS_RESPUESTA3);
+        String tg= in.getStringExtra(TAG_FIELDS_TAG);
         
         // Displaying all values on the screen
         lblName = (TextView) findViewById(R.id.name_label);
+        lblName2 = (TextView) findViewById(R.id.tag_label);
         RadioButton lblResp = (RadioButton) findViewById(R.id.respuesta_label);
         RadioButton lblResp2 = (RadioButton) findViewById(R.id.respuesta2_label);
         RadioButton lblResp3 = (RadioButton) findViewById(R.id.respuesta3_label);
         Button lblEnvResp = (Button) findViewById(R.id.enviar_respuesta);
         
         lblName.setText(name);
+        lblName2.setText("Tipo de pregunta: "+tg);
         lblResp.setText(resp);
         lblResp2.setText(resp2);
         lblResp3.setText(resp3);

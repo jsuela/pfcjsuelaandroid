@@ -1,11 +1,15 @@
 package com.jsuelapfc.preguntaras;
 
+import com.google.android.gcm.GCMRegistrar;
+import static com.jsuelapfc.preguntaras.CommonUtilities.SENDER_ID;
+
 import android.app.NotificationManager;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,6 +27,21 @@ public class MainActivity extends TabActivity {
     @Override 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //GCM check device y checkmanifest se puede borrar antes de publicar
+        GCMRegistrar.checkDevice(this);
+        GCMRegistrar.checkManifest(this);
+        
+        //Si no estamos registrados, nos registramos en GCM
+        final String regId = GCMRegistrar.getRegistrationId(MainActivity.this);
+        if (regId.equals("")) {
+        	Toast.makeText(MainActivity.this,"resgistrando ", Toast.LENGTH_SHORT).show();
+            GCMRegistrar.register(MainActivity.this, SENDER_ID); //Sender ID
+        } else {
+            Log.v("main activity", "Ya registrado");
+            Toast.makeText(MainActivity.this,"ya registradooo ", Toast.LENGTH_SHORT).show();
+        }
+        
+        
         //setContentView(R.layout.activity_main);
         
         
@@ -92,6 +111,14 @@ public class MainActivity extends TabActivity {
             	SharedPreferences.Editor editor = prefs.edit();
             	editor.putString("username", "n/a");
             	editor.commit();
+            	
+                //Si estamos registrados --> Nos des-registramos en GCM
+                final String regId = GCMRegistrar.getRegistrationId(MainActivity.this);
+                if (!regId.equals("")) {
+                    GCMRegistrar.unregister(MainActivity.this);
+                } else {
+                    Log.v("Main Activity", "Ya desregistrado");
+                }
             
                Toast.makeText(getApplicationContext(), "Cerrando sesión", 
                      Toast.LENGTH_SHORT).show();

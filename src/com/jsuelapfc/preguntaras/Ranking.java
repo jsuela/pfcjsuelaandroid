@@ -18,6 +18,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -51,12 +54,15 @@ public class Ranking extends ListActivity{
 	private String mensaje;
 	private final Handler handler = new Handler();
     private Context mContext;
+    
+    private Button lblEnvResp;
+    private Button btnDisplay;
 	
 	
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        setContentView(R.layout.questions);
+	        setContentView(R.layout.ranking);
 	        mContext = this;
 
 	        //Llamamos al servicio
@@ -131,6 +137,13 @@ public class Ranking extends ListActivity{
 	          }
 
           protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
+        	  
+  	        //Damos nombre al botón
+  	        //el siguiente método se ejecutará cuando se presione el botón
+  	        lblEnvResp = (Button) findViewById(R.id.pregunta_amistosa);
+  	        lblEnvResp.setText("Send a question to a friend");
+	        addListenerOnButton();
+  	        
   	        // Updating parsed JSON data into ListView
 	        ListAdapter adapter = new SimpleAdapter(Ranking.this, puntosList,
 	        		R.layout.list_puntos_item,
@@ -142,6 +155,33 @@ public class Ranking extends ListActivity{
         	 pd.dismiss();
           }
 	     }
+	     
+	     
+	     
+	     
+		 public void addListenerOnButton() {
+			 
+				btnDisplay = (Button) findViewById(R.id.pregunta_amistosa);
+			 
+				btnDisplay.setOnClickListener(new OnClickListener() {
+			 
+					@Override
+					public void onClick(View v) {
+
+						pidepreguntaAmistosa();
+		         	};
+			 
+				});
+			 
+			  }
+		 
+		public void pidepreguntaAmistosa(){
+            //Starting new intent
+            Intent in = new Intent(getApplicationContext(), ListadoCompaneros.class);
+            startActivity(in);
+            //finish();
+			
+		}
 	     
       	final Runnable toast = new Runnable(){
      		public void run(){

@@ -32,7 +32,7 @@ import android.widget.Toast;
 
 public class MiServicioPreguntas extends Service {
 	private Timer timer = new Timer();
-	private static final long UPDATE_INTERVAL = 5000;
+	private static final long UPDATE_INTERVAL = 60 * 1000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList<String> list = new ArrayList<String>();
 
@@ -57,10 +57,13 @@ public class MiServicioPreguntas extends Service {
 	//segundo timer
 	private Timer timer2 = new Timer();
 	//24horas
-	private static final long UPDATE_INTERVAL2 = 86400000;
+	private static final long UPDATE_INTERVAL2 = 86400*1000;
 	private String mensaje2;
 	private int limitePreguntasAlDia = 6;
 	private int numeroPreguntasRealizadas;
+	
+	private int nPreguntasEnviadasAmigos;
+
 	
 	private Editor edit;
 	
@@ -71,12 +74,14 @@ public class MiServicioPreguntas extends Service {
 		Toast.makeText(getApplicationContext(),
  				"¡oncreate mi servicio",
  				Toast.LENGTH_SHORT).show();
-		pollForUpdates();
 		
-
-		
-		//controlaremos el min y max de preguntas
-		//checkNumberOfQuestions();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        loginusuario = prefs.getString("username", "n/a");
+		if (!loginusuario.equals("n/a")){
+			pollForUpdates();
+			//controlaremos el min y max de preguntas
+			checkNumberOfQuestions();
+		}
 		
 	}
 	
@@ -115,18 +120,18 @@ public class MiServicioPreguntas extends Service {
 				if (resultado.equals("ok")){
 			        //getting notification
 					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-					Notification notification = new Notification(R.drawable.home, "Tienes preguntas por responder", System.currentTimeMillis());
+					Notification notification = new Notification(R.drawable.ic_launcher, "Tienes preguntas por responder", System.currentTimeMillis());
 					//hacemos que la notificacion no se borre hasta que se abra la app
 					notification.flags |= Notification.FLAG_NO_CLEAR;
 					PendingIntent actividad = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class),0);
 					notification.setLatestEventInfo(this, "Tienes preguntas nuevas", "Ya dedicaste mucho tiempo al ocio...", actividad);
 					nm.notify(ID_NOTIFICATION1, notification);
-					Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.jsuelapfc.preguntaras");
-					startActivity(launchIntent);
+					//Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.jsuelapfc.preguntaras");
+					//startActivity(launchIntent);
 				}else{
 			        //getting notification
 					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-					Notification notification = new Notification(R.drawable.home, "Deberías estar estudiando", System.currentTimeMillis());
+					Notification notification = new Notification(R.drawable.ic_launcher, "Deberías estar estudiando", System.currentTimeMillis());
 					//hacemos que la notificacion no cree nuevo intent, y que se borre en cuanto se pulse
 					notification.flags |= Notification.FLAG_AUTO_CANCEL;
 					PendingIntent actividad = PendingIntent.getActivity(this, 0,  new Intent(),0);
@@ -146,29 +151,59 @@ public class MiServicioPreguntas extends Service {
 
 	}
 	
-	/*private void checkNumberOfQuestions() {
+	private void checkNumberOfQuestions() {
 		timer2.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
-				//cada 24 horas reinicio para controlar el max preguntas al dia y el minimo
+
+				//cada xx horas reinicio para controlar el max preguntas al dia y el minimo
+				
+	            prefs = PreferenceManager.getDefaultSharedPreferences(MiServicioPreguntas.this);
+	    		//Obtenemos los valores de shared preferences
+	    		contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
+	    		numeroPreguntasRealizadas = prefs.getInt("numeroPreguntasRealizadas", 0);	
+	    		//editor para posteriormente cambair valores
+	    		edit = prefs.edit();
+	    		
+				//reinicio el contador de preguntas que podemos realizar a amigos
+				nPreguntasEnviadasAmigos=0;
+    			edit.putInt("nPreguntasEnviadasAmigos", nPreguntasEnviadasAmigos);
+				edit.commit();
+				
+				Log.i("NPreguntasaAmigos", "n preg reseteado a:"+ nPreguntasEnviadasAmigos);
+
 				if (numeroPreguntasRealizadas == 0){
+					/*lanzaNotificacion();
+					numeroPreguntasRealizadas++;*/		
 					lanzaNotificacion();
-					numeroPreguntasRealizadas++;			
+					numeroPreguntasRealizadas++;
+	    			edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
+					edit.commit();
 				}else{
-					numeroPreguntasRealizadas=0;
+					/*numeroPreguntasRealizadas=0;
 	    			contadorAppsOciosas=0;
 	    			Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
 	    			//cal.set(year + 1900, month, day, hour, minute, second); cal.getTime().getTime();
 	    			cal.getTime();
-	    			Log.i("Timer2 Hora", cal.getTime().toGMTString());
+	    			Log.i("Timer2 Hora", cal.getTime().toGMTString());*/
+					numeroPreguntasRealizadas=0;
+					contadorAppsOciosas=0;
+	    			edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
+	    			edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
+					edit.commit();
+					Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
+					cal.getTime();
+					Log.i("Timer2 Hora", cal.getTime().toGMTString());
+					
 				}
 			}
-	     //este timer comenzará a funcionar cuando pasen 24horas
+	     //este timer comenzará a funcionar cuando pasen 24horas, 86400000
 		}, 86400000, UPDATE_INTERVAL2);
+		//}, 10*1000, UPDATE_INTERVAL2);
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
 
 	}
-	*/
+	
 	
 	private void pollForUpdates() {
 		timer.scheduleAtFixedRate(new TimerTask() {
@@ -188,7 +223,6 @@ public class MiServicioPreguntas extends Service {
 	    		contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
 	    		numeroPreguntasRealizadas = prefs.getInt("numeroPreguntasRealizadas", 0);	
 	    		//editor para posteriormente cambair valores
-				
 	    		edit = prefs.edit();
 	    		
 	    		

@@ -10,7 +10,13 @@
         android:orientation="vertical">
 		<!-- Name Label -->
 
-
+		<Button
+	    android:id="@+id/pregunta_extra"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:onClick="preguntaExtra"
+	    android:textColor="#ffffff"
+	    android:textStyle="bold" />
 		
 
 		
@@ -23,21 +29,7 @@
             android:paddingTop="6dip"
             android:paddingBottom="2dip" />
 
-		<TextView
-		    android:id="@+id/puntos"
-		    android:layout_width="fill_parent"
-		    android:layout_height="wrap_content"
-		    android:textColor="#ffffff"
-		    android:textSize="12sp"
-		    android:textStyle="bold" 
-		    />
 
-		<TextView android:id="@+id/puesto"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-          	android:textStyle="bold"
-			android:textSize="12sp"
-            android:textColor="#ffffff"/>
 
        
     </LinearLayout>

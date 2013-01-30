@@ -14,7 +14,7 @@
 	    >
 	
 	    <ImageView
-	        android:src="@drawable/question"
+	        android:src="@drawable/ic_launcher"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="center"
@@ -63,7 +63,7 @@
 			  android:id="@+id/loginpassword"
 			  >
 	  	</EditText>
-	  	
+
 	  	
 	  	<Button 
 	        	android:id="@+id/entrar"
@@ -74,7 +74,7 @@
 	        	android:layout_marginTop = "25dip"
 	        	android:layout_marginBottom = "0dip"
 	      		android:layout_gravity="center"
-	        	android:background="@drawable/entrar"/>
+	        	/>
 	
 	
 	</LinearLayout>

@@ -50,6 +50,7 @@ public class QuestionsList extends ListActivity{
 	private static final String TAG_FIELDS_RESPUESTA2 = "respuesta2";
 	private static final String TAG_FIELDS_RESPUESTA3 = "respuesta3";
 	private static final String TAG_FIELDS_RESPUESTA = "respuesta";
+	private static final String TAG_FIELDS_TAG = "tag";
 	
 	private String loginusuario;
     private SharedPreferences prefs;
@@ -118,6 +119,7 @@ public class QuestionsList extends ListActivity{
 			                String respuesta2 = fields.getString(TAG_FIELDS_RESPUESTA2);	    	    
 			    	        String respuesta3 = fields.getString(TAG_FIELDS_RESPUESTA3);
 			                String respuesta = fields.getString(TAG_FIELDS_RESPUESTA);  
+			                String tag = fields.getString(TAG_FIELDS_TAG); 
 		
 			                String usuario_pendiente = fields.getString(TAG_FIELDS_USUARIO_PENDIENTE);	
 			                
@@ -131,6 +133,7 @@ public class QuestionsList extends ListActivity{
 			                map.put(TAG_FIELDS_RESPUESTA2, respuesta2);
 			                map.put(TAG_FIELDS_RESPUESTA3, respuesta3);
 			                map.put(TAG_FIELDS_RESPUESTA, respuesta);
+			                map.put(TAG_FIELDS_TAG, tag);
 			                map.put(TAG_FIELDS_USUARIO_PENDIENTE, usuario_pendiente);
 			 
 			                // adding HashList to ArrayList
@@ -164,8 +167,8 @@ public class QuestionsList extends ListActivity{
 	        //Listado con respuestas incluidas:
 	        ListAdapter adapter = new SimpleAdapter(QuestionsList.this, preguntasList,
 	        		R.layout.list_preguntas_item,
-	        		new String[] { TAG_FIELDS_PREGUNTA, TAG_FIELDS_RESPUESTA, TAG_FIELDS_RESPUESTA2, TAG_FIELDS_RESPUESTA3}, new int[] {
-                    R.id.pregunta, R.id.respuesta, R.id.respuesta2, R.id.respuesta3});
+	        		new String[] { TAG_FIELDS_PREGUNTA, TAG_FIELDS_RESPUESTA, TAG_FIELDS_RESPUESTA2, TAG_FIELDS_RESPUESTA3, TAG_FIELDS_TAG}, new int[] {
+                    R.id.pregunta, R.id.respuesta, R.id.respuesta2, R.id.respuesta3, R.id.tag});
 	        
 	        setListAdapter(adapter);
 	       	pd.dismiss();
@@ -185,6 +188,7 @@ public class QuestionsList extends ListActivity{
 	                    String resp2 = ((TextView) view.findViewById(R.id.respuesta2)).getText().toString();
 	                    String resp3 = ((TextView) view.findViewById(R.id.respuesta3)).getText().toString();
 	                    String resp = ((TextView) view.findViewById(R.id.respuesta)).getText().toString();
+	                    String tg = ((TextView) view.findViewById(R.id.tag)).getText().toString();
 	     
 	                    //Starting new intent
 	                    Intent in = new Intent(getApplicationContext(), SingleQuestion.class);
@@ -192,6 +196,7 @@ public class QuestionsList extends ListActivity{
 	                    in.putExtra(TAG_FIELDS_RESPUESTA, resp);
 	                    in.putExtra(TAG_FIELDS_RESPUESTA2, resp2);
 	                    in.putExtra(TAG_FIELDS_RESPUESTA3, resp3);
+	                    in.putExtra(TAG_FIELDS_TAG, tg);
 	                    startActivity(in);
 	                    finish();
 	            }

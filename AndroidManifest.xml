@@ -7,9 +7,21 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="15" />
 
-    <uses-permission android:name="android.permission.INTERNET"></uses-permission>
+
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.GET_TASKS"></uses-permission>
+    
+    <permission android:name="com.jsuelapfc.preguntaras.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+	<uses-permission android:name="com.jsuelapfc.preguntaras.permission.C2D_MESSAGE" />
+	
+	<!-- App receives GCM messages. -->
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<!-- GCM connects to Google Services. -->
+	<uses-permission android:name="android.permission.INTERNET" /> 
+	<!-- GCM requires a Google account. -->
+	<uses-permission android:name="android.permission.GET_ACCOUNTS" />
+	<!-- Keeps the processor from sleeping when a message is received. -->
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
     
     <application
         android:icon="@drawable/ic_launcher"
@@ -31,14 +43,26 @@
         </receiver>
         
         
+        <receiver android:name="com.google.android.gcm.GCMBroadcastReceiver" android:permission="com.google.android.c2dm.permission.SEND" >
+			  <intent-filter>
+			    <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+			    <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+			    <category android:name="com.jsuelapfc.preguntaras" />
+			  </intent-filter>
+		</receiver>
+        
+        
+        
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".Ranking"></activity>
+        <activity android:name=".ListadoCompaneros"></activity>
         <activity android:name=".QuestionsList"></activity>
         <activity android:name=".Listing"></activity>
         <service android:name=".MiServicioPreguntas"></service>
         <activity android:name=".Tips"></activity>
         <activity android:name=".Refresh"></activity>
         <activity android:name=".SingleQuestion" android:configChanges="keyboardHidden|orientation"></activity>  
+		<service android:name=".GCMIntentService" />
     </application>
 
 </manifest>

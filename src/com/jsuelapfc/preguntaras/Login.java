@@ -55,13 +55,15 @@ public class Login extends Activity {
         mContext = this;
         
         Button button = (Button) findViewById(R.id.entrar);
+        button.setText("Entrar");
+        
         
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		loginusuario = prefs.getString("username", "n/a");
 		
 		
 		//Comprobamos si ya ha habido login, y si es así saltamos a la pantalla principal
-		if (loginusuario.equals("n/a")){
+		if (!loginusuario.equals("n/a")){
      		Toast.makeText(mContext,
      				"¡Hola " + loginusuario+"!",
      				Toast.LENGTH_SHORT).show();
