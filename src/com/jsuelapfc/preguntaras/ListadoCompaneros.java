@@ -69,7 +69,7 @@ public class ListadoCompaneros extends ListActivity {
     
 	private int nPreguntasEnviadasAmigos;
 	private Editor edit;
-	private int limitePreguntasEnviadasAmigos = 5;
+	private int limitePreguntasEnviadasAmigos = 10;
 
 
 	@Override
@@ -87,7 +87,7 @@ public class ListadoCompaneros extends ListActivity {
         jParser = new JSONParser();
  
         // getting JSON string from URL
-        url = "http://10.0.2.2:1234/android/clasificacion";	
+        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
         
     	pd = ProgressDialog.show(ListadoCompaneros.this, "Preguntas", "Cargando...", true, false);	
 
@@ -195,7 +195,7 @@ public class ListadoCompaneros extends ListActivity {
 							Toast.makeText(ListadoCompaneros.this, "Enviando pregunta a "+destinatario, Toast.LENGTH_LONG).show(); 
 							
 					        loginusuario = prefs.getString("username", "n/a");
-					        url2 = "http://10.0.2.2:1234/android/enviapreguntaextra/"+loginusuario+"/"+destinatario;
+					        url2 = "http://pfc-jsuelaplaza.libresoft.es/android/enviapreguntaextra/"+loginusuario+"/"+destinatario;
 	
 							
 		            		new Thread(new Runnable(){
@@ -234,9 +234,13 @@ public class ListadoCompaneros extends ListActivity {
 		    		        		        	mensaje = "El usuario no ha utilizado la app todavía";
 		    		        		            handler.post(toast);
 		    									
+		    								}else if (resultado.equals("no_red")){
+		    		        		        	mensaje = "Ha ocurrido un error en el servidor";
+		    		        		            handler.post(toast);
 		    		
 		    								}else{
-		    		        		        	mensaje = "No se puede contactar con el servidor";
+		    		        		        	mensaje = "No se puede contactar con el servidor"+resultado;
+		    		        		        	System.out.println(resultado);
 		    		        		            handler.post(toast);
 		    								}
 		    								
@@ -269,7 +273,7 @@ public class ListadoCompaneros extends ListActivity {
 							}
 					//si hemos superado el limite de preguntas
 		    		}else{
-		    			Toast.makeText(ListadoCompaneros.this,"Has superado el limite de preguntas, inténtalo mañana", Toast.LENGTH_LONG).show();
+		    			Toast.makeText(ListadoCompaneros.this,"Has superado el limite de preguntas, inténtalo mañana"+Integer.toString(nPreguntasEnviadasAmigos), Toast.LENGTH_LONG).show();
 		    		}
 						
 				}

@@ -86,7 +86,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 	   DefaultHttpClient httpclient = new DefaultHttpClient();
 		   
 		    try {
-		    	HttpGet httpget = new HttpGet("http://10.0.2.2:1234/android/gcm/registro");
+		    	HttpGet httpget = new HttpGet("http://pfc-jsuelaplaza.libresoft.es/android/gcm/registro");
 		           Toast.makeText(this,"android/gcm/registro ", Toast.LENGTH_SHORT).show();
 		    	HttpResponse response = httpclient.execute(httpget);
 	
@@ -99,11 +99,20 @@ public class GCMIntentService extends GCMBaseIntentService {
 		    			System.out.println("entras aqui?");
 		    			/*csrf = headers[i].toString().split(":")[2];
 		    			csrf = csrf.replace("}","");*/
-		    			csrf = headers[i].toString().split(" ")[2];
+		    			/*csrf = headers[i].toString().split(" ")[2];
 		    			System.out.println("el csrf0000 es:"+ csrf);
 		    			csrf = csrf.replace(";","");
 
-		    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);
+		    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);*/
+		    			
+		    			//para version apache
+		    			/*csrf = headers[i].toString().split(" ")[1];
+		    			csrf = csrf.replace(";","");*/
+		    			csrf=headers[i].toString();
+		    			csrf = csrf.replace("Set-Cookie:","");
+		    			csrf = csrf.replace(" ","");
+		    			csrf = csrf.replace(";expires","");
+		    			
 
          			nameValuePairs.add(new BasicNameValuePair("user", usuario));
          			nameValuePairs.add(new BasicNameValuePair("codigoGCM", regId));
@@ -113,7 +122,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 		    		}
 		    	} 
     			    	
-				HttpPost httppost = new HttpPost("http://10.0.2.2:1234/android/gcm/registro");
+				HttpPost httppost = new HttpPost("http://pfc-jsuelaplaza.libresoft.es/android/gcm/registro");
 		    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
 		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
@@ -230,17 +239,19 @@ public class GCMIntentService extends GCMBaseIntentService {
         Intent notIntent = new Intent(contexto,
             GCMIntentService.class);
      
-        PendingIntent contIntent = PendingIntent.getActivity(
-            contexto, 0, notIntent, 0);
+        PendingIntent actividad = PendingIntent.getActivity(this, 0, new Intent(this, Tips.class),0);
      
         notif.setLatestEventInfo(
-            contexto, titulo, descripcion, contIntent);
+            contexto, titulo, descripcion, actividad);
      
         //AutoCancel: cuando se pulsa la notificaión ésta desaparece
         notif.flags |= Notification.FLAG_AUTO_CANCEL;
      
         //Enviar notificación
         notManager.notify(3, notif);
+        
+        
+        
     }
 
     /*@Override

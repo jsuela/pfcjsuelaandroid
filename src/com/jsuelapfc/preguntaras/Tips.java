@@ -57,7 +57,7 @@ public class Tips extends ListActivity{
 	        jParser = new JSONParser();
 	 
 	        // getting JSON string from URL
-	        url = "http://10.0.2.2:1234/android/tips";	
+	        url = "http://pfc-jsuelaplaza.libresoft.es/android/tips";	
 
 	      //Creamos una nueva instancia y llamamos al método ejecutar
 	      //pasándole el string.

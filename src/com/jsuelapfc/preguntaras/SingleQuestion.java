@@ -124,7 +124,7 @@ public class SingleQuestion extends Activity {
               			   DefaultHttpClient httpclient = new DefaultHttpClient();
              			   
             			    try {
-               			    	HttpGet httpget = new HttpGet("http://10.0.2.2:1234/android/enviarespuestas");
+               			    	HttpGet httpget = new HttpGet("http://pfc-jsuelaplaza.libresoft.es/android/enviarespuestas");
                			    	HttpResponse response = httpclient.execute(httpget);
               
                    	
@@ -141,14 +141,25 @@ public class SingleQuestion extends Activity {
            			    			System.out.println("cabecera:"+headers[i].toString());
                			    		if (headers[i].toString().contains("csrftoken")){
                			    			
-               			    			System.out.println("entras aqui?");
+               			    			/*System.out.println("entras aqui?");
                			    			/*csrf = headers[i].toString().split(":")[2];
-               			    			csrf = csrf.replace("}","");*/
+               			    			csrf = csrf.replace("}","");
                			    			csrf = headers[i].toString().split(" ")[2];
                			    			System.out.println("el csrf0000 es:"+ csrf);
                			    			csrf = csrf.replace(";","");
 
-              			    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);
+              			    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);*/
+               			    			
+               			    			//para version apache
+               			    			
+               			    			/*csrf = headers[i].toString().split(" ")[1];
+               			    			csrf = csrf.replace(";","");
+               			    			System.out.println("el csrf111111 es:"+ headers[i].toString());
+               			    			System.out.println("el csrf111111 es:"+ csrf.split("=")[1]);*/
+               			    			csrf=headers[i].toString();
+               			    			csrf = csrf.replace("Set-Cookie:","");
+               			    			csrf = csrf.replace(" ","");
+               			    			csrf = csrf.replace(";expires","");
 
 
 
@@ -159,7 +170,7 @@ public class SingleQuestion extends Activity {
     	               			   
                			 
                			    	
-            					HttpPost httppost = new HttpPost("http://10.0.2.2:1234/android/enviarespuestas");
+            					HttpPost httppost = new HttpPost("http://pfc-jsuelaplaza.libresoft.es/android/enviarespuestas");
                			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
                			    	System.out.println("el csrffinalll es:"+ csrf);
                			    	nameValuePairs.add(new BasicNameValuePair("respuesta", radioGroupButton.getText().toString()));

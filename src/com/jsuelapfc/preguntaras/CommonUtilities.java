@@ -27,7 +27,7 @@ public final class CommonUtilities {
     /**
      * Base URL of the Demo Server (such as http://my_host:8080/gcm-demo)
      */
-    static final String SERVER_URL = "http://10.0.2.2:1234/android/gcm/registro";
+    static final String SERVER_URL = "http://pfc-jsuelaplaza.libresoft.es/android/gcm/registro";
 
     /**
      * Google API project id registered to use GCM.

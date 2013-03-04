@@ -89,7 +89,7 @@ public class QuestionsList extends ListActivity{
 	        // getting JSON string from URL
 	        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	        loginusuario = prefs.getString("username", "n/a");
-	        url = "http://10.0.2.2:1234/android/pidepreguntas/"+loginusuario;	
+	        url = "http://pfc-jsuelaplaza.libresoft.es/android/pidepreguntas/"+loginusuario;	
 	        
 	    	pd = ProgressDialog.show(QuestionsList.this, "Preguntas", "Cargando...", true, false);	
 
@@ -226,7 +226,7 @@ public class QuestionsList extends ListActivity{
 		        // getting new question
 		        prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
 		        loginusuario = prefs.getString("username", "n/a");
-		        url = "http://10.0.2.2:1234/android/preguntaextra/"+loginusuario;
+		        url = "http://pfc-jsuelaplaza.libresoft.es/android/preguntaextra/"+loginusuario;
 		        
 	            final ProgressDialog pd1 = ProgressDialog.show(QuestionsList.this, "Preguntas", "Cargando...", true, false);
 

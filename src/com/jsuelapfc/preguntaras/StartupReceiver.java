@@ -24,7 +24,21 @@ public class StartupReceiver extends BroadcastReceiver {
 		
 	}
 	
-/*	 // Restart service every 30 seconds
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*	 // Restart service every 30 seconds
 	  private static final long REPEAT_TIME = 1000 * 5;
 
 	  @Override

@@ -39,7 +39,8 @@ public class MiServicioPreguntas extends Service {
 	private String mensaje;
 	private String app;
 	private int contadorAppsOciosas;
-	private int limiteOcio = 2;
+	private int limiteOcio = 15;
+	private int limitePreguntasAlDia = 10;
 	
 	private static final int ID_NOTIFICATION1 = 1;
 	private static final int ID_NOTIFICATION2 = 2;
@@ -57,9 +58,9 @@ public class MiServicioPreguntas extends Service {
 	//segundo timer
 	private Timer timer2 = new Timer();
 	//24horas
-	private static final long UPDATE_INTERVAL2 = 86400*1000;
+	private static final long UPDATE_INTERVAL2 = 86400 *1000;
 	private String mensaje2;
-	private int limitePreguntasAlDia = 6;
+
 	private int numeroPreguntasRealizadas;
 	
 	private int nPreguntasEnviadasAmigos;
@@ -108,7 +109,7 @@ public class MiServicioPreguntas extends Service {
         // getting new question
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         loginusuario = prefs.getString("username", "n/a");
-        url = "http://10.0.2.2:1234/android/sumapregunta/"+loginusuario;	
+        url = "http://pfc-jsuelaplaza.libresoft.es/android/sumapregunta/"+loginusuario;	
 		try {
 			HttpClient client = new DefaultHttpClient();
 			String getURL = url;
@@ -126,8 +127,17 @@ public class MiServicioPreguntas extends Service {
 					PendingIntent actividad = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class),0);
 					notification.setLatestEventInfo(this, "Tienes preguntas nuevas", "Ya dedicaste mucho tiempo al ocio...", actividad);
 					nm.notify(ID_NOTIFICATION1, notification);
-					//Intent launchIntent = getPackageManager().getLaunchIntentForPackage("com.jsuelapfc.preguntaras");
-					//startActivity(launchIntent);
+					
+				}else if(resultado.equals("fail")){
+			        //getting notification
+					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+					Notification notification = new Notification(R.drawable.ic_launcher, "Deberías estar estudiando", System.currentTimeMillis());
+					//hacemos que la notificacion no cree nuevo intent, y que se borre en cuanto se pulse
+					notification.flags |= Notification.FLAG_AUTO_CANCEL;
+					PendingIntent actividad = PendingIntent.getActivity(this, 0,  new Intent(),0);
+					notification.setLatestEventInfo(this, "¡ESTUDIA!", "Te has librado de milagro...no quedan preguntas", actividad);
+					nm.notify(ID_NOTIFICATION2, notification);
+					
 				}else{
 			        //getting notification
 					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
@@ -140,15 +150,11 @@ public class MiServicioPreguntas extends Service {
 
 				}
 			} else {
-
 				Log.i("ERROR", "no ok");
-
 			}
 		} catch (Exception e) {
 			Log.i("ERROR", "*******CONECTION PROBLEM********");
 		}
-        
-
 	}
 	
 	private void checkNumberOfQuestions() {
@@ -180,12 +186,6 @@ public class MiServicioPreguntas extends Service {
 	    			edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
 					edit.commit();
 				}else{
-					/*numeroPreguntasRealizadas=0;
-	    			contadorAppsOciosas=0;
-	    			Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
-	    			//cal.set(year + 1900, month, day, hour, minute, second); cal.getTime().getTime();
-	    			cal.getTime();
-	    			Log.i("Timer2 Hora", cal.getTime().toGMTString());*/
 					numeroPreguntasRealizadas=0;
 					contadorAppsOciosas=0;
 	    			edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
@@ -198,7 +198,7 @@ public class MiServicioPreguntas extends Service {
 				}
 			}
 	     //este timer comenzará a funcionar cuando pasen 24horas, 86400000
-		}, 86400000, UPDATE_INTERVAL2);
+		}, 86400, UPDATE_INTERVAL2);
 		//}, 10*1000, UPDATE_INTERVAL2);
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
 
@@ -212,41 +212,29 @@ public class MiServicioPreguntas extends Service {
 	        	String tarea = miraTasks();
 	    		Log.i("NQUEST", "numeropregrealizadas"
 	    				+ numeroPreguntasRealizadas);
-
-	    		mensaje = tarea.split("[.]")[1];
-	    		/// Pra mostrar en un toast la tarea
+	    		mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+" "+Integer.toString(numeroPreguntasRealizadas);
 	    		handler.post(toast);
-	    		app = tarea.split("[.]")[1];
-	    		
+	    		app = tarea.split("[.]")[1];	    		
 	            prefs = PreferenceManager.getDefaultSharedPreferences(MiServicioPreguntas.this);
 	    		//Obtenemos los valores de shared preferences
 	    		contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
 	    		numeroPreguntasRealizadas = prefs.getInt("numeroPreguntasRealizadas", 0);	
-	    		//editor para posteriormente cambair valores
-	    		edit = prefs.edit();
-	    		
-	    		
+	    		edit = prefs.edit();    		
 	    		if ((app.equals("facebook")) || (app.equals("instagram")) || (app.equals("clau"))|| (app.equals("twitter"))){
 	    			contadorAppsOciosas++;
 	    			edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
 					edit.commit();
-	    			//contadorAppsOciosas++;
 	    		}
-	    		if ((contadorAppsOciosas == limiteOcio) && (numeroPreguntasRealizadas < limitePreguntasAlDia)){
-	    			/*lanzaNotificacion();
-	    			contadorAppsOciosas=0;
-	    			numeroPreguntasRealizadas++;*/
+	    		if ((contadorAppsOciosas > limiteOcio) && (numeroPreguntasRealizadas <= limitePreguntasAlDia)){
+	    			lanzaNotificacion();
 	    			contadorAppsOciosas=0;
 					edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
 					numeroPreguntasRealizadas++;
 					edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
 					edit.commit();
 	    		}
-	    			
-	        	
 	    		Log.i("***MISERVICIOPREGUNTAS", "Comenzamos");
 			}
-
 		}, 0, UPDATE_INTERVAL);
 		Log.i(getClass().getSimpleName(), "Timer started.");
 

@@ -66,15 +66,14 @@ public class Ranking extends ListActivity{
 	        mContext = this;
 
 	        //Llamamos al servicio
-			//doBindService();
-	        
+				        
 	        Intent intent = new Intent(this, MiServicioPreguntas.class);
 	        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
 
 	        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 			Calendar cal1 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
 
-			// Start every 30 seconds
+			// Start every 60 seconds
 	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 60*1000, pintent); 
 	 
 	        // Hashmap for ListView
@@ -84,7 +83,7 @@ public class Ranking extends ListActivity{
 	        jParser = new JSONParser();
 	 
 	        // getting JSON string from URL
-	        url = "http://10.0.2.2:1234/android/clasificacion";	
+	        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
 	        
 	    	pd = ProgressDialog.show(Ranking.this, "Preguntas", "Cargando...", true, false);	
 

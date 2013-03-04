@@ -67,7 +67,7 @@ public class Listing extends ListActivity{
 	        // getting JSON string from URL
 	        prefs = PreferenceManager.getDefaultSharedPreferences(this);
 	        loginusuario = prefs.getString("username", "n/a");
-	        url = "http://10.0.2.2:1234/android/listacorrectas/"+loginusuario;	
+	        url = "http://pfc-jsuelaplaza.libresoft.es/android/listacorrectas/"+loginusuario;	
 	        
 	    	pd = ProgressDialog.show(Listing.this, "Preguntas", "Cargando...", true, false);	
 
