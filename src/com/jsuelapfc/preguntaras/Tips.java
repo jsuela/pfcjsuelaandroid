@@ -46,6 +46,9 @@ public class Tips extends ListActivity{
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
+	        //para que no gire a modo landscape
+	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 	        setContentView(R.layout.questions);
 
 	        mContext = this;

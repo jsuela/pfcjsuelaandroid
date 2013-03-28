@@ -60,6 +60,8 @@ public class SingleQuestion extends Activity {
     	//Eliminamos la linea del titulo de la app
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+ 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setContentView(R.layout.single_list_pregunta_item);
         
         // getting intent data
@@ -202,8 +204,12 @@ public class SingleQuestion extends Activity {
                     				}
                     				
                 					Intent in = new Intent(getApplicationContext(), MainActivity.class);
+		        				    Bundle b = new Bundle();
+		        					b.putCharSequence("notify", "2");
+		        					in.putExtras(b);
                 					startActivity(in);
-                					finish();
+                					finish();                					
+                					
 
                     			}else
                     				mensaje = "No se puede conectar con el servidor en este momento. " +

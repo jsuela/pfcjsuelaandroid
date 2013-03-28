@@ -18,6 +18,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -77,6 +78,8 @@ public class QuestionsList extends ListActivity{
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.questionslist);
+	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
 	        mContext = this;
 
@@ -246,7 +249,12 @@ public class QuestionsList extends ListActivity{
 							        //getting notification
 									finish();
 									Intent in = new Intent(getApplicationContext(), MainActivity.class);
+		        				    Bundle b = new Bundle();
+		        					b.putCharSequence("notify", "1");
+		        					in.putExtras(b);
 		        					startActivity(in);
+		        					
+		        					
 		        		        	mensaje = "Pregunta añadida";
 		        		            handler.post(toast);
 		

@@ -63,6 +63,8 @@ public class Ranking extends ListActivity{
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.ranking);
+	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 	        mContext = this;
 
 	        //Llamamos al servicio

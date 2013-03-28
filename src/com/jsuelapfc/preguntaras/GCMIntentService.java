@@ -35,14 +35,13 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
+import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMBaseIntentService;
-import com.google.android.gcm.GCMRegistrar;
 
 /**
  * IntentService responsible for handling GCM messages.
@@ -236,10 +235,19 @@ public class GCMIntentService extends GCMBaseIntentService {
         CharSequence titulo = "Nuevo aviso";
         CharSequence descripcion = msg;
      
-        Intent notIntent = new Intent(contexto,
-            GCMIntentService.class);
-     
-        PendingIntent actividad = PendingIntent.getActivity(this, 0, new Intent(this, Tips.class),0);
+        Intent notIntent = new Intent(this,
+            MainActivity.class);
+        
+	    Bundle b = new Bundle();
+        if (msg.contains("Te ha enviado una pregunta")){
+		    b.putCharSequence("notify", "4");
+		    notIntent.putExtras(b);
+        }else{
+		    b.putCharSequence("notify", "5");
+		    notIntent.putExtras(b);
+        }
+        
+        PendingIntent actividad = PendingIntent.getActivity(this, 0, notIntent,0);
      
         notif.setLatestEventInfo(
             contexto, titulo, descripcion, actividad);
@@ -248,7 +256,15 @@ public class GCMIntentService extends GCMBaseIntentService {
         notif.flags |= Notification.FLAG_AUTO_CANCEL;
      
         //Enviar notificación
-        notManager.notify(3, notif);
+        notManager.notify(4, notif);
+        
+        
+        
+        
+        
+
+        
+        
         
         
         

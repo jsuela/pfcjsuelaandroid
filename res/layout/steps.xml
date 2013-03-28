@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="fill_parent"
+  android:layout_height="fill_parent"
+  android:background="#313738"
+  >
+
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	    android:orientation="vertical"
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:padding="5dip"
+	    >
+	
+	    <ImageView
+	        android:src="@drawable/ic_launcher"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="center"
+	        android:layout_marginTop="20dip"
+	        />
+	
+	  <TextView
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:paddingTop = "30dip"
+		  android:layout_marginLeft="10dip"
+		  android:textStyle="bold|italic"
+		  android:textColor="#FFF"
+		  android:text = "Debes saber...
+La aplicación multa el exceso uso de redes sociales o aplicaciones relacionadas con el ocio
+como Facebook, Instagram, Twitter... La multa a pagar será responder una pregunta tipo test.
+La aplicación tiene un apartado llamado ranking en el que podrás ver tu posición respecto la 
+de tus compañeros de clase, por lo que si estás aburrido podrás pedir una pregunta extra
+para poder escalar a los primeros puestos, o bien retar a un compañero con una pregunta 'amistosa' 
+para que baje puestos.
+
+Las puntuaciones obtenidas dependiendo del tipo de pregunta son:
+
+multa: acierto +2 fallo -1
+extra: acierto +3 fallo -1
+amistosa: acierto +1 fallo -2
+">
+	  </TextView>
+	
+
+	</LinearLayout>
+</ScrollView>

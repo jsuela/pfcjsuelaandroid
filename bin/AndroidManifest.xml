@@ -53,15 +53,17 @@
         
         
         
-        <activity android:name=".MainActivity"></activity>
-        <activity android:name=".Ranking"></activity>
-        <activity android:name=".ListadoCompaneros"></activity>
-        <activity android:name=".QuestionsList"></activity>
-        <activity android:name=".Listing"></activity>
+        <activity android:name=".MainActivity" android:configChanges="keyboardHidden|orientation" ></activity>
+        <activity android:name=".Ranking" android:configChanges="keyboardHidden|orientation" ></activity>
+        <activity android:name=".ListadoCompaneros" android:configChanges="keyboardHidden|orientation" ></activity>
+        <activity android:name=".QuestionsList" android:configChanges="keyboardHidden|orientation" ></activity>
+        <activity android:name=".Listing" android:configChanges="keyboardHidden|orientation" ></activity>
         <service android:name=".MiServicioPreguntas"></service>
-        <activity android:name=".Tips"></activity>
-        <activity android:name=".Refresh"></activity>
+        <activity android:name=".Tips" android:configChanges="keyboardHidden|orientation" ></activity>
+        <activity android:name=".Refresh" android:configChanges="keyboardHidden|orientation"></activity>
         <activity android:name=".SingleQuestion" android:configChanges="keyboardHidden|orientation"></activity>  
+		<activity android:name=".Steps" android:configChanges="keyboardHidden|orientation"></activity>  
+        
 		<service android:name=".GCMIntentService" />
     </application>
 

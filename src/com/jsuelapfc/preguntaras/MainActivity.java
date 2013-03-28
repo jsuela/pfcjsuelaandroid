@@ -1,10 +1,9 @@
 package com.jsuelapfc.preguntaras;
 
-import com.google.android.gcm.GCMRegistrar;
 import static com.jsuelapfc.preguntaras.CommonUtilities.SENDER_ID;
-
 import android.app.NotificationManager;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -13,9 +12,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.Toast;
+
+import com.google.android.gcm.GCMRegistrar;
 
 public class MainActivity extends TabActivity {
 	
@@ -27,6 +30,12 @@ public class MainActivity extends TabActivity {
     @Override 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+ 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
+ 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setContentView(R.layout.main);
+        
+
+
         //GCM check device y checkmanifest se puede borrar antes de publicar
         GCMRegistrar.checkDevice(this);
         GCMRegistrar.checkManifest(this);
@@ -42,19 +51,28 @@ public class MainActivity extends TabActivity {
         }
         
         
-        //setContentView(R.layout.activity_main);
-        
-        
- 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
+
  	    //Quitamos la barra de android donde muestra la cobertura, batería, etc..          
  	    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
         //setContentView(R.layout.main);
 		
 		//comprobamos las notificaciones
-		NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+        //si hay entonces miraremos cual pesgtaña es la que se abre
+
+        CharSequence notify = "";
+        //hay q utilizar extras para abrir ciertas pestañas
+        if (getIntent().getExtras() != null) {
+            Bundle b = getIntent().getExtras();
+            notify = b.getCharSequence("notify");
+        }
+        
+		NotificationManager nm = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        //Toast.makeText(MainActivity.this,"nm es "+ nm., Toast.LENGTH_LONG).show();
 		//1 es el ID de la notificacion
 		nm.cancel(1);
 		nm.cancel(2);
+		nm.cancel(3);
+		nm.cancel(4);
         
         
 		final TabHost tabHost = getTabHost();
@@ -85,9 +103,40 @@ public class MainActivity extends TabActivity {
 	            .setIndicator("Consumidor", 
 	            this.getResources().getDrawable(R.drawable.settings))
 	            .setContent(new Intent(this, Consumer.class)));	*/
-		tabHost.computeScroll();	
+		//tabHost.computeScroll();	
+		//para que se situe en el primero, es decir, en ranking
+       // int pos = getIntent().getIntExtra("POSICION", 0); 
+        //tabHost.setCurrentTab(pos);
+        if(notify.equals("4")){
+            tabHost.setCurrentTab(1);
+        }else if(notify.equals("5")){
+        	tabHost.setCurrentTab(3);
+        }else if(notify.equals("1")){
+        	tabHost.setCurrentTab(1);
+        }else if(notify.equals("2")){
+        	tabHost.setCurrentTab(2);
+        } else {
+            tabHost.setCurrentTab(0);
+        }
         
-        
+        Button buttonSteps = (Button) findViewById(R.id.steps);
+    	buttonSteps.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), Steps.class);
+                startActivity(in);
+            	
+            }
+            
+
+    	});
+        Button buttonSubjects = (Button) findViewById(R.id.subjects);
+    	buttonSubjects.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), Steps.class);
+                startActivity(in);
+            	
+            }
+    	});
         
         
     }

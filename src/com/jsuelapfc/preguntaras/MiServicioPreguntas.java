@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -39,11 +40,12 @@ public class MiServicioPreguntas extends Service {
 	private String mensaje;
 	private String app;
 	private int contadorAppsOciosas;
-	private int limiteOcio = 15;
+	private int limiteOcio = 30;
 	private int limitePreguntasAlDia = 10;
 	
 	private static final int ID_NOTIFICATION1 = 1;
 	private static final int ID_NOTIFICATION2 = 2;
+	private static final int ID_NOTIFICATION3 = 3;
 	
 	private final Handler handler = new Handler();
 	
@@ -124,7 +126,13 @@ public class MiServicioPreguntas extends Service {
 					Notification notification = new Notification(R.drawable.ic_launcher, "Tienes preguntas por responder", System.currentTimeMillis());
 					//hacemos que la notificacion no se borre hasta que se abra la app
 					notification.flags |= Notification.FLAG_NO_CLEAR;
-					PendingIntent actividad = PendingIntent.getActivity(this, 0, new Intent(this, MainActivity.class),0);
+					//añadimos extras para que se abra posteriormente el tab correspondiente
+					Intent notIntent = new Intent(this, MainActivity.class);
+				    Bundle b = new Bundle();
+					b.putCharSequence("notify", "1");
+					notIntent.putExtras(b);
+					
+					PendingIntent actividad = PendingIntent.getActivity(this, 0, notIntent ,0);
 					notification.setLatestEventInfo(this, "Tienes preguntas nuevas", "Ya dedicaste mucho tiempo al ocio...", actividad);
 					nm.notify(ID_NOTIFICATION1, notification);
 					
@@ -136,7 +144,7 @@ public class MiServicioPreguntas extends Service {
 					notification.flags |= Notification.FLAG_AUTO_CANCEL;
 					PendingIntent actividad = PendingIntent.getActivity(this, 0,  new Intent(),0);
 					notification.setLatestEventInfo(this, "¡ESTUDIA!", "Te has librado de milagro...no quedan preguntas", actividad);
-					nm.notify(ID_NOTIFICATION2, notification);
+					nm.notify(ID_NOTIFICATION3, notification);
 					
 				}else{
 			        //getting notification

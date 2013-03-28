@@ -51,6 +51,8 @@ public class Login extends Activity {
 
 		//Para login descomentar desde aqui hasta.....y poner activity en vez de Tabactivity
         setContentView(R.layout.login);
+ 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
 
         mContext = this;
         

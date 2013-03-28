@@ -14,7 +14,6 @@ import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
@@ -23,8 +22,8 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -76,6 +75,7 @@ public class ListadoCompaneros extends ListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
+ 	    //para que no rote setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.ranking2);
         
         lv = (ListView)findViewById(android.R.id.list);
@@ -266,10 +266,10 @@ public class ListadoCompaneros extends ListActivity {
 	
 							}catch( NullPointerException e){
 								pd1.dismiss();
-								Toast.makeText(ListadoCompaneros.this,"Debes elegir un compañero", Toast.LENGTH_SHORT).show();
+								Toast.makeText(ListadoCompaneros.this,"Debes elegir un compañero", Toast.LENGTH_LONG).show();
 							}catch( Exception e){
 								pd1.dismiss();
-								Toast.makeText(ListadoCompaneros.this,"Error ", Toast.LENGTH_SHORT).show();
+								Toast.makeText(ListadoCompaneros.this,"Error ", Toast.LENGTH_LONG).show();
 							}
 					//si hemos superado el limite de preguntas
 		    		}else{
