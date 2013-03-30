@@ -128,9 +128,10 @@ public class MiServicioPreguntas extends Service {
 					notification.flags |= Notification.FLAG_NO_CLEAR;
 					//añadimos extras para que se abra posteriormente el tab correspondiente
 					Intent notIntent = new Intent(this, MainActivity.class);
-				    Bundle b = new Bundle();
+				    /*Bundle b = new Bundle();
 					b.putCharSequence("notify", "1");
-					notIntent.putExtras(b);
+					notIntent.putExtras(b);*/
+					notIntent.putExtra("notify", "1");
 					
 					PendingIntent actividad = PendingIntent.getActivity(this, 0, notIntent ,0);
 					notification.setLatestEventInfo(this, "Tienes preguntas nuevas", "Ya dedicaste mucho tiempo al ocio...", actividad);

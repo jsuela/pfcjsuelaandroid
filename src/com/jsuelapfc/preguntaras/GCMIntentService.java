@@ -238,13 +238,15 @@ public class GCMIntentService extends GCMBaseIntentService {
         Intent notIntent = new Intent(this,
             MainActivity.class);
         
-	    Bundle b = new Bundle();
+	    //Bundle b = new Bundle();
         if (msg.contains("Te ha enviado una pregunta")){
-		    b.putCharSequence("notify", "4");
-		    notIntent.putExtras(b);
+		    /*b.putCharSequence("notify", "4");
+		    notIntent.putExtras(b);*/
+        	notIntent.putExtra("notify", "4");
         }else{
-		    b.putCharSequence("notify", "5");
-		    notIntent.putExtras(b);
+		    /*b.putCharSequence("notify", "5");
+		    notIntent.putExtras(b);*/
+		    notIntent.putExtra("notify", "5");
         }
         
         PendingIntent actividad = PendingIntent.getActivity(this, 0, notIntent,0);

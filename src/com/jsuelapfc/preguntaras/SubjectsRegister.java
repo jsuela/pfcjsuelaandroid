@@ -2,12 +2,18 @@ package com.jsuelapfc.preguntaras;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,6 +21,7 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
@@ -32,44 +39,69 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ListadoCompaneros extends ListActivity {
+public class SubjectsRegister extends ListActivity {
 	
 	// url to make request
 	private static String url;
 	private static String url2;
+	private static String url3;
+	private static String subject;
+
 	 
 	// JSON Node names
-	private static final String TAG_PUNTOS = "puntos";
+	private static final String TAG_ASIGNATURASALUMNO = "asignaturasalumno";
 	private static final String TAG_PK = "pk";
 	private static final String TAG_MODEL = "model";
 
 	private static final String TAG_FIELDS = "fields";
-	private static final String TAG_FIELDS_PUNTOS = "puntos";
-	private static final String TAG_FIELDS_USUARIO = "usuario";
+	private static final String TAG_FIELDS_ASIGNATURA = "asignatura";
+	
+	// JSON Node names2
+	private static final String TAG_ASIGNATURAS = "asignaturas";
+	//private static final String TAG_PK = "pk";
+	//private static final String TAG_MODEL = "model";
+
+	//private static final String TAG_FIELDS = "fields";
+	//private static final String TAG_FIELDS_ASIGNATURA = "asignatura";
+
+	
+
 	private JSONParser jParser;
-	private ArrayList<HashMap<String, String>> puntosList;
+	private JSONParser jParser2;
+
+	private ArrayList<HashMap<String, String>> asignaturasalumnoList;
+	private ArrayList<HashMap<String, String>> asignaturasList;
 
 	// contacts JSONArray
-	private JSONArray puntos = null;
+	private JSONArray asignaturasalumno = null;
+	private JSONArray asignaturas = null;
+
 	
 	private ProgressDialog pd;
 	
 	private String mensaje;
 	private final Handler handler = new Handler();
-    private Button lblEnvResp;
-    private Button btnDisplay;
+    private Button irA;
+    private Button irMatricula;
+
+    private Button btnDisplayirMatricula;
+    private Button btnDisplayirA;
     
     private ListAdapter adapter2;
+    private ListAdapter adapter3;
     
     private ListView lv;
+    private ListView lv2;
+    private TextView tv;
+
     
 	private String loginusuario;
     private SharedPreferences prefs;
     private String resultado;
     
-	private int nPreguntasEnviadasAmigos;
+	/*private int nPreguntasEnviadasAmigos;
 	private Editor edit;
-	private int limitePreguntasEnviadasAmigos = 10;
+	private int limitePreguntasEnviadasAmigos = 10;*/
 
 
 	@Override
@@ -77,41 +109,56 @@ public class ListadoCompaneros extends ListActivity {
         super.onCreate(savedInstanceState);
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
  	    //para que no rote setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.ranking2);
+        setContentView(R.layout.subjects);
         
         lv = (ListView)findViewById(android.R.id.list);
+		irA = (Button) findViewById(R.id.matricularse);
+		tv = (TextView)findViewById(R.id.titulo);
+		tv.setText("Listado de todas las asignaturas");
+		
+
+
         
         // Hashmap for ListView
-        puntosList = new ArrayList<HashMap<String, String>>();
+        asignaturasList = new ArrayList<HashMap<String, String>>();
  
         // Creating JSON Parser instance
         jParser = new JSONParser();
+
  
-        // getting JSON string from URL
-        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
         
-    	pd = ProgressDialog.show(ListadoCompaneros.this, "Preguntas", "Cargando...", true, false);	
+        prefs = PreferenceManager.getDefaultSharedPreferences(SubjectsRegister.this);
+        loginusuario = prefs.getString("username", "n/a");
+        // getting JSON string from URL
+        
+        url = "http://pfc-jsuelaplaza.libresoft.es/android/asignaturas/listado";
+    	pd = ProgressDialog.show(SubjectsRegister.this, "Preguntas", "Cargando...", true, false);	
 
 	    new MiTarea().execute(url);
         
     }
 	
 	
+    
+    
+
+    
+    
     private class MiTarea extends AsyncTask<String, ListAdapter, ArrayList<HashMap<String, String>> >{
 
 
         protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
 
-	        prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
-	        loginusuario = prefs.getString("username", "n/a");
+
 		        try {
+
 			        JSONObject json = jParser.getJSONFromUrl(url);
 		            // Getting Array of Contacts
-		            puntos = json.getJSONArray(TAG_PUNTOS);
+		            asignaturas = json.getJSONArray(TAG_ASIGNATURAS);
 		 
 		            // looping through All Contacts
-		            for(int i = 0; i < puntos.length(); i++){
-		                JSONObject c = puntos.getJSONObject(i);
+		            for(int i = 0; i < asignaturas.length(); i++){
+		                JSONObject c = asignaturas.getJSONObject(i);
 		 
 		                // Storing each json item in variable
 		                String pk = c.getString(TAG_PK);
@@ -119,24 +166,20 @@ public class ListadoCompaneros extends ListActivity {
 		         
 		                // Respuestas is agin JSON Object
 		                JSONObject fields = c.getJSONObject(TAG_FIELDS);
-		                String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
-		                String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
-		  	                
+		                String asignaturas = fields.getString(TAG_FIELDS_ASIGNATURA);  
+   	    
+
 		                
 		                // creating new HashMap
 		                HashMap<String, String> map = new HashMap<String, String>();
 		 
 		                // adding each child node to HashMap key => value
-		                //muestro todos menos yo
 
 		                map.put(TAG_PK, pk);
 		                map.put(TAG_MODEL, model);
-		                map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
-		                map.put(TAG_FIELDS_USUARIO, usuario);
-			            if(!(loginusuario.equals(usuario))){
-			                // adding HashList to ArrayList
-				            puntosList.add(map); 
-		                }
+		                map.put(TAG_FIELDS_ASIGNATURA, asignaturas);
+		                asignaturasList.add(map); 
+
 		            } 
 		        } catch (Exception e) {
   				mensaje = "No se puede conectar con el servidor. Inténtelo más tarde";
@@ -144,14 +187,14 @@ public class ListadoCompaneros extends ListActivity {
   				handler.post(toast);
 		            e.printStackTrace();
 		        }	
-				return puntosList;
+				return asignaturasList;
         }
 
     protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
 	        //Damos nombre al botón
 	        //el siguiente método se ejecutará cuando se presione el botón
-    		lblEnvResp = (Button) findViewById(R.id.pregunta_amistosa);
-  	        lblEnvResp.setText("Enviar pregunta a...");
+    		irA = (Button) findViewById(R.id.matricularse);
+    		irA.setText("Matricularme");
 	        addListenerOnButton();
 	        
 	        
@@ -161,122 +204,154 @@ public class ListadoCompaneros extends ListActivity {
 	        
 	        
     	
-	        adapter2 = new SimpleAdapter(ListadoCompaneros.this, puntosList,
+	        /*adapter2 = new SimpleAdapter(Subjects.this, asignaturasalumnoList,
     		  android.R.layout.simple_list_item_single_choice,
-      		new String[] { TAG_FIELDS_USUARIO}, new int[] {
+      		new String[] { TAG_FIELDS_ASIGNATURA}, new int[] {
+    		  android.R.id.text1});*/
+
+	        
+	        
+	        adapter3 = new SimpleAdapter(SubjectsRegister.this, asignaturasList,
+    		  android.R.layout.simple_list_item_single_choice,
+      		new String[] { TAG_FIELDS_ASIGNATURA}, new int[] {
     		  android.R.id.text1});
       
       
       
-	        lv.setAdapter(adapter2);
+	        /*lv.setAdapter(adapter3);
+	        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);  */
+	        
+	        lv.setAdapter(adapter3);
 	        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);  
         
   	 pd.dismiss();
     }
     }
+    
+    
 	 public void addListenerOnButton() {
 		 
-			btnDisplay = (Button) findViewById(R.id.pregunta_amistosa);
+		 	btnDisplayirA = (Button) findViewById(R.id.matricularse);
 		 
-			btnDisplay.setOnClickListener(new OnClickListener() {
+		 	btnDisplayirA.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-		    		//Obtenemos los valores de shared preferences
-		            prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
-		    		nPreguntasEnviadasAmigos = prefs.getInt("nPreguntasEnviadasAmigos", 0);	
-		    		
-		    		//miramos si hemos llegado al limite de preguntas a enviar o no
-		    		if (nPreguntasEnviadasAmigos<limitePreguntasEnviadasAmigos){	
-						final ProgressDialog pd1 = ProgressDialog.show(ListadoCompaneros.this, "Preguntas", "Enviando...", true, false);
-						try{
-	
-							int p =  lv.getCheckedItemPosition();
-							String destinatario = ((TextView) lv.getChildAt(p)).getText().toString(); 
-							Toast.makeText(ListadoCompaneros.this, "Enviando pregunta a "+destinatario, Toast.LENGTH_LONG).show(); 
-							
-					        loginusuario = prefs.getString("username", "n/a");
-					        url2 = "http://pfc-jsuelaplaza.libresoft.es/android/enviapreguntaextra/"+loginusuario+"/"+destinatario;
-							
-		            		new Thread(new Runnable(){
-		            			@Override
-		                		public void run(){
-		            		        
-		    						try {
-		    							HttpClient client = new DefaultHttpClient();
-		    							String getURL = url2;
-		    							HttpGet get = new HttpGet(getURL);
-		    							HttpResponse responseGet = client.execute(get);
-		    							HttpEntity resEntityGet = responseGet.getEntity();
-		    							if (resEntityGet != null) {
-		    								resultado = EntityUtils.toString(resEntityGet);
-		    								System.out.println("***************result list:"+resultado);
-		    								if (resultado.equals("ok")){
-		    							        //getting notification
-		    		        		        	mensaje = "Pregunta enviada a tu compañero";
-		    		        		            handler.post(toast);
-		    		        		            //incremento el valor del contador de preguntas que puedo enviar
-		    		        		            nPreguntasEnviadasAmigos++;
-		    		        		    		edit = prefs.edit();
-		    		        	    			edit.putInt("nPreguntasEnviadasAmigos", nPreguntasEnviadasAmigos);
-		    		        					edit.commit();
-		    		        					Log.i("ListadoCOmpaneros", "numero prealizaamigos: "+nPreguntasEnviadasAmigos);
-		    									finish();
-		    									//Intent in = new Intent(getApplicationContext(), MainActivity.class);
-		    		        					//startActivity(in);
-		    		        					
 
-		    									
-		    								}else if (resultado.equals("fail")){
-		    		        		        	mensaje = "No hay preguntas disponibles (de momento...)";
-		    		        		            handler.post(toast);
-		    		        		            
-		    								}else if (resultado.equals("no_user")){
-		    		        		        	mensaje = "El usuario no ha utilizado la app todavía";
-		    		        		            handler.post(toast);
-		    									
-		    								}else if (resultado.equals("no_red")){
-		    		        		        	mensaje = "Ha ocurrido un error en el servidor";
-		    		        		            handler.post(toast);
-		    		
-		    								}else{
-		    		        		        	mensaje = "No se puede contactar con el servidor"+resultado;
-		    		        		        	System.out.println(resultado);
-		    		        		            handler.post(toast);
-		    								}
-		    								
-		    							} else {
-		    		
-		    	        		        	mensaje = "Error al contactar con el servidor";
-		    	        		            handler.post(toast);		
-		    							}
-		    						} catch (Exception e) {
-		    							Log.i("ERROR", "CONECTION PROBLEM");
-		            		        	mensaje = "Imposible contactar con el servidor";
-		            		            handler.post(toast);
-		    		
-		    						}
-		    					    pd1.dismiss();
-		    	    			}
-		  
-		             		}).start();		
-							
-		                    /*utilizamos finish para que al lanzar una nueva activity el usuario
-		                    no pueda volver hacia atrás*/
-							//finish();
-	
-							}catch( NullPointerException e){
-								pd1.dismiss();
-								Toast.makeText(ListadoCompaneros.this,"Debes elegir un compañero", Toast.LENGTH_LONG).show();
-							}catch( Exception e){
-								pd1.dismiss();
-								Toast.makeText(ListadoCompaneros.this,"Error ", Toast.LENGTH_LONG).show();
-							}
-					//si hemos superado el limite de preguntas
-		    		}else{
-		    			Toast.makeText(ListadoCompaneros.this,"Has superado el limite de preguntas, inténtalo mañana"+Integer.toString(nPreguntasEnviadasAmigos), Toast.LENGTH_LONG).show();
-		    		}
+					final ProgressDialog pd1 = ProgressDialog.show(SubjectsRegister.this, "Preguntas", "Enviando...", true, false);
+					try{
+
+						int p =  lv.getCheckedItemPosition();
+						subject = ((TextView) lv.getChildAt(p)).getText().toString(); 
+						Toast.makeText(SubjectsRegister.this, "Matriculando "+subject, Toast.LENGTH_LONG).show(); 
 						
+				        loginusuario = prefs.getString("username", "n/a");
+				        url3 = "http://pfc-jsuelaplaza.libresoft.es/android/asignaturas/matricula";
+
+						
+	            		new Thread(new Runnable(){
+	            			@Override
+	                		public void run(){
+	                     	    String csrf = null;
+	                  			DefaultHttpClient httpclient = new DefaultHttpClient();
+	    						try {  
+
+                   			    	HttpGet httpget = new HttpGet(url3);
+                   			    	HttpResponse response = httpclient.execute(httpget);
+                       	
+                   			    	Header[] headers = response.getAllHeaders();
+                   			    	
+                			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
+
+                   			    	
+                   			    	for (int i = 0; i < headers.length; i++){	
+               			    			System.out.println("cabeceraaaa:"+response.getParams().toString());
+                   			    		if (headers[i].toString().contains("csrftoken")){
+
+                   			    			csrf=headers[i].toString();
+                   			    			csrf = csrf.replace("Set-Cookie:","");
+                   			    			csrf = csrf.replace(" ","");
+                   			    			csrf = csrf.replace(";expires","");
+                   			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
+
+                   			    			
+		     
+                   			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
+		                        			nameValuePairs.add(new BasicNameValuePair("usuario", loginusuario));
+		                        			nameValuePairs.add(new BasicNameValuePair("asignatura", subject));
+	                       			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+
+                   			    		}
+                   			    	} 
+	    	               			    	
+                					HttpPost httppost = new HttpPost("http://pfc-jsuelaplaza.libresoft.es/android/asignaturas/matricula");
+                   			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+
+                			        
+                			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+                			        
+                			        response = httpclient.execute(httppost);
+                			        HttpEntity resEntityGet = response.getEntity();
+                			        
+                        			//pd.dismiss();
+                        			
+	    							if (resEntityGet != null) {
+	    								resultado = EntityUtils.toString(resEntityGet);
+	    								if (resultado.equals("ok")){
+	    							        //getting notification
+	    		        		        	mensaje = "Matriculado correctamente";
+	    		        		            handler.post(toast);
+	    									finish();
+	    									Intent in = new Intent(getApplicationContext(), Subjects.class);
+	    		        					startActivity(in);
+	    					                finish();
+	    		        					
+
+	    									
+	    								}else if (resultado.equals("exist")){
+	    		        		        	mensaje = "Ya estas matriculado en esta asignatura";
+	    		        		            handler.post(toast);
+	    		        		            
+	    		
+	    								}else{
+	    		        		        	mensaje = "No se puede contactar con el servidor"+resultado;
+	    		        		        	System.out.println(resultado);
+	    		        		            handler.post(toast);
+	    								}
+	    								
+	    							} else {
+	    		
+	    	        		        	mensaje = "Error al contactar con el servidor";
+	    	        		            handler.post(toast);		
+	    							}
+
+	    							
+	    							
+	    						} catch (Exception e) {
+	    							Log.i("ERROR", "CONECTION PROBLEM"+resultado);
+	            		        	mensaje = "Imposible contactar con el servidor";
+	            		            handler.post(toast);
+	    		
+	    						}
+	    					    pd1.dismiss();
+	    	    			}
+	  
+	             		}).start();		
+						
+	                    /*utilizamos finish para que al lanzar una nueva activity el usuario
+	                    no pueda volver hacia atrás*/
+						//finish();
+
+						}catch( NullPointerException e){
+							pd1.dismiss();
+							Toast.makeText(SubjectsRegister.this,"Debes elegir una asignatura", Toast.LENGTH_LONG).show();
+						}catch( Exception e){
+							pd1.dismiss();
+							Toast.makeText(SubjectsRegister.this,"Error ", Toast.LENGTH_LONG).show();
+						}
+
+						
+				
 				}
 		 
 
@@ -426,7 +501,7 @@ public class ListadoCompaneros extends ListActivity {
 		  }*/
   	final Runnable toast = new Runnable(){
  		public void run(){
-     		Toast.makeText(ListadoCompaneros.this,
+     		Toast.makeText(SubjectsRegister.this,
      				mensaje,
      				Toast.LENGTH_LONG).show();
 
@@ -434,3 +509,4 @@ public class ListadoCompaneros extends ListActivity {
  	};
 
 }
+

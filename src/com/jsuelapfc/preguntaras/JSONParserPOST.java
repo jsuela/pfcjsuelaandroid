@@ -20,44 +20,19 @@ import org.json.JSONObject;
 
 import android.util.Log;
  
-public class JSONParser {
+public class JSONParserPOST {
   
     static InputStream is = null;
     static JSONObject jObj = null;
     static String json = "";
  
     // constructor
-    public JSONParser() {
+    public JSONParserPOST() {
  
     }
  
-    public JSONObject getJSONFromUrl(String url) {
- 
-        // Making HTTP request
-        try {
-        	
-        	HttpParams params = new BasicHttpParams();
-        	HttpProtocolParams.setContentCharset(params, "utf-8");
-      	
-        	
-        	
-        	
-            // defaultHttpClient
-            DefaultHttpClient httpClient = new DefaultHttpClient(params);
-            HttpGet httpGet = new HttpGet(url);
- 
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-            HttpEntity httpEntity = httpResponse.getEntity();
-            is = httpEntity.getContent();          
- 
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
- 
+    public JSONObject getJSONFromResponse(InputStream is) {
+
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
                     is, "UTF-8"), 8);
@@ -81,6 +56,7 @@ public class JSONParser {
         }
  
         // return JSON String
+        System.out.println("*J*J*J*J*J*J json es:"+jObj);
         return jObj;
  
     }

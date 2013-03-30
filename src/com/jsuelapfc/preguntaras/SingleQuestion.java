@@ -204,9 +204,10 @@ public class SingleQuestion extends Activity {
                     				}
                     				
                 					Intent in = new Intent(getApplicationContext(), MainActivity.class);
-		        				    Bundle b = new Bundle();
+		        				    /*Bundle b = new Bundle();
 		        					b.putCharSequence("notify", "2");
-		        					in.putExtras(b);
+		        					in.putExtras(b);*/
+                					in.putExtra("notify", "2");
                 					startActivity(in);
                 					finish();                					
                 					

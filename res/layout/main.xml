@@ -11,6 +11,8 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
+        
+
                 <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -19,6 +21,30 @@
             android:gravity="right"
             >
 
+                	<LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" 
+                    >
+		<!-- marginleft es ese valor porque 
+			40+40 de los dos iconos hacen que el inicio este "fuera" de la pantalla
+		-->
+                           <Button
+                               android:id="@+id/currentsubject"
+                               android:layout_width="match_parent"
+                               android:textColor="#ffffff"
+                               android:textStyle="bold"
+                               android:textSize="16sp"
+                               android:layout_height="40dip"
+                               android:layout_gravity="left"
+                               android:gravity="center_vertical"
+                               android:layout_marginBottom="1dip"
+                               android:layout_marginLeft="87dip"
+                               android:layout_marginTop="5dip" >
+						</Button>
+         </LinearLayout>           
+                    
+                    
 
          <Button
 				android:id="@+id/subjects"
@@ -43,9 +69,12 @@
          
 
          
+
+         
          
          
         </LinearLayout>
+
              
 
         <TabWidget

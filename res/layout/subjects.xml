@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	<!-- Main ListView 
+		 Always give id value as list(@android:id/list)
+	-->
+	
+    <TextView
+		android:id="@+id/titulo"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		
+		android:paddingTop="10dip"
+		      android:paddingBottom="10dip"
+		android:textStyle="bold|italic"
+		android:textColor="#FFFFFF"
+		android:textSize="20dip"
+		android:background= "#A4A4A4" 
+/>
+ 
+	  
+
+
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:textColor="#ffffff"
+        android:choiceMode="singleChoice"
+        />
+
+        
+        <Button
+	    android:id="@+id/matricularse"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	   
+	    android:textColor="#ffffff"
+	    android:textStyle="bold" />
+
+        		
+
+
+    		   
+    		   
+
+
+</LinearLayout>

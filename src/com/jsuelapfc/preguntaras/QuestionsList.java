@@ -162,7 +162,7 @@ public class QuestionsList extends ListActivity{
 	        //Damos nombre al botón
 	        //el siguiente método se ejecutará cuando se presione el botón
 	        lblEnvResp = (Button) findViewById(R.id.pregunta_extra);
-	        lblEnvResp.setText("Pregunta extra");
+	        lblEnvResp.setText("Pide una regunta extra");
 	        
 	        addListenerOnButton();
 	        
@@ -249,9 +249,10 @@ public class QuestionsList extends ListActivity{
 							        //getting notification
 									finish();
 									Intent in = new Intent(getApplicationContext(), MainActivity.class);
-		        				    Bundle b = new Bundle();
+		        				    /*Bundle b = new Bundle();
 		        					b.putCharSequence("notify", "1");
-		        					in.putExtras(b);
+		        					in.putExtras(b);*/
+									in.putExtra("notify", "1");
 		        					startActivity(in);
 		        					
 		        					

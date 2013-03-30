@@ -37,6 +37,8 @@ public class Login extends Activity {
 	private String mensaje = "Incorrecto";
 	private final Handler handler = new Handler();
     private Context mContext;
+    private String asignatura;
+
     
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -66,12 +68,21 @@ public class Login extends Activity {
 		
 		//Comprobamos si ya ha habido login, y si es así saltamos a la pantalla principal
 		if (!loginusuario.equals("n/a")){
-     		Toast.makeText(mContext,
-     				"¡Hola " + loginusuario+"!",
-     				Toast.LENGTH_SHORT).show();
-     		Intent in = new Intent(getApplicationContext(), MainActivity.class);
-     		startActivity(in);
-			finish();
+			//miramos si ya ha escogido alguna asignatura, sino le obligamos a que escoja
+	        asignatura = prefs.getString("subject", "n/a");
+			if (asignatura.equals("n/a")){
+				Intent in = new Intent(getApplicationContext(), Subjects.class);
+	            startActivity(in);
+	            finish();
+			}else{
+			
+	     		Toast.makeText(mContext,
+	     				"¡Hola " + loginusuario+"!",
+	     				Toast.LENGTH_SHORT).show();
+	     		Intent in = new Intent(getApplicationContext(), MainActivity.class);
+	     		startActivity(in);
+				finish();
+			}
 		}
 		
 		
@@ -162,7 +173,7 @@ public class Login extends Activity {
                         				edit.putString("password", loginpassword);
                         				edit.putString("registrationId", "1a2b");
                         				edit.commit();
-                            			Intent in = new Intent(getApplicationContext(), MainActivity.class);
+                            			Intent in = new Intent(getApplicationContext(), Subjects.class);
                             			startActivity(in);
                             			finish();
                         			}else
