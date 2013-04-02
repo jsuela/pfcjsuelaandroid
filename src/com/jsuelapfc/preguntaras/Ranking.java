@@ -17,6 +17,9 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -76,6 +79,7 @@ public class Ranking extends ListActivity{
     
 	private String asignatura;
     private SharedPreferences prefs;
+	private String loginusuario;
 	
 	
 	   @Override
@@ -104,7 +108,8 @@ public class Ranking extends ListActivity{
 	        jParser = new JSONParserPOST();
 	 
 	        // getting JSON string from URL
-	        url = "http://193.147.51.87:1234/android/clasificacion";	
+	        //url = "http://193.147.51.87:1235/android/clasificacion";	
+	        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
 	        
 	    	pd = ProgressDialog.show(Ranking.this, "Preguntas", "Cargando...", true, false);	
 
@@ -117,9 +122,15 @@ public class Ranking extends ListActivity{
 	          protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
 
 			        try {
+			        	
+	        	
+			        	
+			        	
 
                  	    String csrf = null;
-              			DefaultHttpClient httpclient = new DefaultHttpClient();
+				        	HttpParams params = new BasicHttpParams();
+				        	HttpProtocolParams.setContentCharset(params, "utf-8");
+	              			DefaultHttpClient httpclient = new DefaultHttpClient(params);
 						 
 
            			    	HttpGet httpget = new HttpGet(url);
@@ -127,18 +138,27 @@ public class Ranking extends ListActivity{
                	
            			    	Header[] headers = response.getAllHeaders();
            			    	
+
+           			    	//para imprimir por pantalla
+           			    	HttpEntity resEntityGet2 = response.getEntity();
+           			    	String resultado2 = EntityUtils.toString(resEntityGet2);
+           			    	System.out.println("*A*A*A"+ resultado2);
+           			    	
+           			    	//Log.e("*A*A*A", "Error" + resultado2);
+           			    	//borrar
+           			    	
         			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 
            			    	
            			    	for (int i = 0; i < headers.length; i++){	
-       			    			System.out.println("cabeceraaaa:"+response.getParams().toString());
+       			    			
            			    		if (headers[i].toString().contains("csrftoken")){
-
+           			    			System.out.println("cabeceraaaa:"+headers[i].toString());
            			    			csrf=headers[i].toString();
            			    			csrf = csrf.replace("Set-Cookie:","");
            			    			csrf = csrf.replace(" ","");
            			    			csrf = csrf.replace(";expires","");
-           			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
+           			    			System.out.println("*C*C*C*C*C*C el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
            			    			
      
@@ -146,6 +166,7 @@ public class Ranking extends ListActivity{
                         			//obtengo el nombre de la asignatura
            			    	        prefs = PreferenceManager.getDefaultSharedPreferences(Ranking.this);
            			    	        asignatura = prefs.getString("subject", "n/a");
+
            			    			
                         			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
                    			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
@@ -162,61 +183,62 @@ public class Ranking extends ListActivity{
         			        response = httpclient.execute(httppost);
         			        HttpEntity resEntityGet = response.getEntity();
         			        is = resEntityGet.getContent();
+        			        //System.out.println("*****R*R*R*R* is es:"+is.toString());
+        			        
 
+           			    	//para imprimir por pantalla si hay error
+           			    	//HttpEntity resEntityGet3 = response.getEntity();
+           			    	//String resultado3 = EntityUtils.toString(resEntityGet);
+           			    	//System.out.println("*A*A*A"+ resultado3);
+           			    	//Log.e("*A*A*A", "Error" + resultado2);
+           			    	//borrareste trozo
+
+        			        
+        			        
                 			
-							if (resEntityGet != null) {
-								
-								
-						        try{	
-							        JSONObject json = jParser.getJSONFromResponse(is);
-						            // Getting Array of Contacts
-						            puntos = json.getJSONArray(TAG_PUNTOS);
-						 
-						            // looping through All Contacts
-						            for(int i = 0; i < puntos.length(); i++){
-						                JSONObject c = puntos.getJSONObject(i);
-						 
-						                // Storing each json item in variable
-						                String pk = c.getString(TAG_PK);
-						                String model = c.getString(TAG_MODEL);
-						         
-						                // Respuestas is agin JSON Object
-						                JSONObject fields = c.getJSONObject(TAG_FIELDS);
-						                String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
-						                String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
-						  	                
-						                
-						                // creating new HashMap
-						                HashMap<String, String> map = new HashMap<String, String>();
-						 
-						                // adding each child node to HashMap key => value
-						                map.put(TAG_PK, pk);
-						                map.put(TAG_MODEL, model);
-						                map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
-						                map.put(TAG_FIELDS_USUARIO, usuario);
-						            	  
-						                // adding HashList to ArrayList
-						               puntosList.add(map); 
-						            } 
-						        } catch (Exception e) {
-			        				mensaje = "No se puede conectar con el servidor. Inténtelo más tarde";
-			        			 
-			        				handler.post(toast);
-						            e.printStackTrace();
-						        }
-								
-								
-								
-							} else {
-		
-	        		        	mensaje = "Error al contactar con el servidor";
-	        		            handler.post(toast);		
+							try{	
+							    JSONObject json = jParser.getJSONFromResponse(is);
+							    // Getting Array of Contacts
+							    puntos = json.getJSONArray(TAG_PUNTOS);
+ 
+							    // looping through All Contacts
+							    for(int i = 0; i < puntos.length(); i++){
+							        JSONObject c = puntos.getJSONObject(i);
+ 
+							        // Storing each json item in variable
+							        String pk = c.getString(TAG_PK);
+							        String model = c.getString(TAG_MODEL);
+							 
+							        // Respuestas is agin JSON Object
+							        JSONObject fields = c.getJSONObject(TAG_FIELDS);
+							        String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
+							        String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
+							            
+							        
+							        // creating new HashMap
+							        HashMap<String, String> map = new HashMap<String, String>();
+ 
+							        // adding each child node to HashMap key => value
+							        map.put(TAG_PK, pk);
+							        map.put(TAG_MODEL, model);
+							        map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
+							        map.put(TAG_FIELDS_USUARIO, usuario);
+							    	  
+							        // adding HashList to ArrayList
+							       puntosList.add(map); 
+							    } 
+							} catch (Exception e) {
+								mensaje = "No se puede conectar con el servidor. Inténtelo más tarde";
+							 
+								handler.post(toast);
+							    e.printStackTrace();
 							}
 
 							
 							
 						} catch (Exception e) {
 							Log.i("ERROR", "CONECTION PROBLEM");
+
         		        	mensaje = "Imposible contactar con el servidor";
         		            handler.post(toast);
 		

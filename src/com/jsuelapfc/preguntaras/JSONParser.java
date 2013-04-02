@@ -38,10 +38,7 @@ public class JSONParser {
         	
         	HttpParams params = new BasicHttpParams();
         	HttpProtocolParams.setContentCharset(params, "utf-8");
-      	
-        	
-        	
-        	
+ 	
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient(params);
             HttpGet httpGet = new HttpGet(url);

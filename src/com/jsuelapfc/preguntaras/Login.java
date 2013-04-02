@@ -18,6 +18,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
@@ -60,6 +61,11 @@ public class Login extends Activity {
         
         Button button = (Button) findViewById(R.id.entrar);
         button.setText("Entrar");
+        Button button2 = (Button) findViewById(R.id.quierounacuenta);
+        button2.setText("¿Quieres una cuenta?");
+        
+        
+        
         
         
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -85,7 +91,16 @@ public class Login extends Activity {
 			}
 		}
 		
+    	button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+              	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://pfc-jsuelaplaza.libresoft.es/signin"));
+            	startActivity(i);
+            	
+            }
+        });
 		
+		
+		//si pulsamos al boton de entrar
     	button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
@@ -96,7 +111,7 @@ public class Login extends Activity {
             		etpassword = (EditText) findViewById(R.id.loginpassword);
             		loginpassword = etpassword.getText().toString();
             	}catch( NullPointerException e){
-					Toast.makeText(Login.this,"Usuario o contrase ", Toast.LENGTH_SHORT).show();
+					Toast.makeText(Login.this,"Usuario o contraseña incorrecto", Toast.LENGTH_SHORT).show();
 				}
  
                 

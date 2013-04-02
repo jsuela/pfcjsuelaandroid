@@ -35,7 +35,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -139,7 +138,7 @@ public class GCMIntentService extends GCMBaseIntentService {
  			}else
  				mensaje = "GCM NO OK";
  			 
- 			handler.post(toast);
+ 			//muestra mensjaes GCM handler.post(toast);
  			
 		    /*} catch (ClientProtocolException e) {
 
@@ -240,12 +239,22 @@ public class GCMIntentService extends GCMBaseIntentService {
         
 	    //Bundle b = new Bundle();
         if (msg.contains("Te ha enviado una pregunta")){
+        	//el mensaje viene asi: asigantura += Te ha enviado una pregunta + usuario
+        	String msgAsignatura = msg.split("=")[0];
+        	descripcion= msg.split("=")[1];
+        	//notificacion de pregunta
+        	notIntent.putExtra("asignatura", msgAsignatura);
 		    /*b.putCharSequence("notify", "4");
 		    notIntent.putExtras(b);*/
         	notIntent.putExtra("notify", "4");
         }else{
+        	//notificacion de leccion
 		    /*b.putCharSequence("notify", "5");
 		    notIntent.putExtras(b);*/
+        	//String asig = msg.split(" ")[0];
+        	String msgAsignatura2 = msg.split("=")[0];
+        	descripcion= msg.split("=")[1];
+        	notIntent.putExtra("asignatura", msgAsignatura2);
 		    notIntent.putExtra("notify", "5");
         }
         
@@ -256,6 +265,9 @@ public class GCMIntentService extends GCMBaseIntentService {
      
         //AutoCancel: cuando se pulsa la notificaión ésta desaparece
         notif.flags |= Notification.FLAG_AUTO_CANCEL;
+		notif.defaults |= Notification.DEFAULT_SOUND;
+		notif.defaults |= Notification.DEFAULT_VIBRATE;
+		notif.defaults |= Notification.DEFAULT_LIGHTS;
      
         //Enviar notificación
         notManager.notify(4, notif);

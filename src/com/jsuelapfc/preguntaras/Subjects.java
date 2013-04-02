@@ -116,7 +116,7 @@ public class Subjects extends ListActivity {
         
         lv = (ListView)findViewById(android.R.id.list);
 		tv = (TextView)findViewById(R.id.titulo);
-		tv.setText("Elige una de las asignaturas matriculadas");
+		tv.setText("Carga los datos de una de las asignaturas matriculadas");
 
         
         // Hashmap for ListView

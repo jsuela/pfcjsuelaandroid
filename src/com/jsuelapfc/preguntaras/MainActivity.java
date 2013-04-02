@@ -52,7 +52,7 @@ public class MainActivity extends TabActivity {
             GCMRegistrar.register(MainActivity.this, SENDER_ID); //Sender ID
         } else {
             Log.v("main activity", "Ya registrado");
-            Toast.makeText(MainActivity.this,"ya registradooo ", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this,"ya registradooo ", Toast.LENGTH_SHORT).show();
         }
         
         

@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Binder;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -50,6 +49,7 @@ public class MiServicioPreguntas extends Service {
 	private final Handler handler = new Handler();
 	
 	private String loginusuario;
+	private String asignat;
     private SharedPreferences prefs;
     
 
@@ -61,7 +61,7 @@ public class MiServicioPreguntas extends Service {
 	private Timer timer2 = new Timer();
 	//24horas
 	private static final long UPDATE_INTERVAL2 = 86400 *1000;
-	private String mensaje2;
+
 
 	private int numeroPreguntasRealizadas;
 	
@@ -74,13 +74,15 @@ public class MiServicioPreguntas extends Service {
 	public void onCreate() {
 		super.onCreate();
 		Log.i("*******", "entor en oncreate");
-		Toast.makeText(getApplicationContext(),
+		
+		/*Toast.makeText(getApplicationContext(),
  				"¡oncreate mi servicio",
- 				Toast.LENGTH_SHORT).show();
+ 				Toast.LENGTH_SHORT).show();*/
 		
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         loginusuario = prefs.getString("username", "n/a");
-		if (!loginusuario.equals("n/a")){
+        asignat = prefs.getString("subject", "n/a");
+		if ((!loginusuario.equals("n/a")) && (!asignat.equals("n/a"))) {
 			pollForUpdates();
 			//controlaremos el min y max de preguntas
 			checkNumberOfQuestions();
@@ -112,6 +114,8 @@ public class MiServicioPreguntas extends Service {
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
         loginusuario = prefs.getString("username", "n/a");
         url = "http://pfc-jsuelaplaza.libresoft.es/android/sumapregunta/"+loginusuario;	
+        //url = "http://193.147.51.87:1235/android/sumapregunta/"+loginusuario;	
+        
 		try {
 			HttpClient client = new DefaultHttpClient();
 			String getURL = url;
@@ -120,31 +124,43 @@ public class MiServicioPreguntas extends Service {
 			HttpEntity resEntityGet = responseGet.getEntity();
 			if (resEntityGet != null) {
 				resultado = EntityUtils.toString(resEntityGet);
-				if (resultado.equals("ok")){
+				String resultado1 = resultado.split("=")[0];
+				String msgAsignatura = resultado.split("=")[1];
+				System.out.println("@@@@@@@@@@ "+msgAsignatura);
+				if (resultado1.equals("ok")){
 			        //getting notification
 					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 					Notification notification = new Notification(R.drawable.ic_launcher, "Tienes preguntas por responder", System.currentTimeMillis());
 					//hacemos que la notificacion no se borre hasta que se abra la app
 					notification.flags |= Notification.FLAG_NO_CLEAR;
+					notification.defaults |= Notification.DEFAULT_SOUND;
+					notification.defaults |= Notification.DEFAULT_VIBRATE;
+					notification.defaults |= Notification.DEFAULT_LIGHTS;
 					//añadimos extras para que se abra posteriormente el tab correspondiente
 					Intent notIntent = new Intent(this, MainActivity.class);
 				    /*Bundle b = new Bundle();
 					b.putCharSequence("notify", "1");
 					notIntent.putExtras(b);*/
 					notIntent.putExtra("notify", "1");
+		        	//le decimos de que asignatura es pregunta
+		        	notIntent.putExtra("asignatura", msgAsignatura);
 					
 					PendingIntent actividad = PendingIntent.getActivity(this, 0, notIntent ,0);
 					notification.setLatestEventInfo(this, "Tienes preguntas nuevas", "Ya dedicaste mucho tiempo al ocio...", actividad);
 					nm.notify(ID_NOTIFICATION1, notification);
 					
-				}else if(resultado.equals("fail")){
+				}else if(resultado1.equals("fail")){
 			        //getting notification
 					NotificationManager nm = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
 					Notification notification = new Notification(R.drawable.ic_launcher, "Deberías estar estudiando", System.currentTimeMillis());
 					//hacemos que la notificacion no cree nuevo intent, y que se borre en cuanto se pulse
 					notification.flags |= Notification.FLAG_AUTO_CANCEL;
+					notification.defaults |= Notification.DEFAULT_SOUND;
+					notification.defaults |= Notification.DEFAULT_VIBRATE;
+					notification.defaults |= Notification.DEFAULT_LIGHTS;
+					
 					PendingIntent actividad = PendingIntent.getActivity(this, 0,  new Intent(),0);
-					notification.setLatestEventInfo(this, "¡ESTUDIA!", "Te has librado de milagro...no quedan preguntas", actividad);
+					notification.setLatestEventInfo(this, "Te has librado de milagro...", "no quedan preguntas...es solo un aviso", actividad);
 					nm.notify(ID_NOTIFICATION3, notification);
 					
 				}else{
@@ -153,6 +169,9 @@ public class MiServicioPreguntas extends Service {
 					Notification notification = new Notification(R.drawable.ic_launcher, "Deberías estar estudiando", System.currentTimeMillis());
 					//hacemos que la notificacion no cree nuevo intent, y que se borre en cuanto se pulse
 					notification.flags |= Notification.FLAG_AUTO_CANCEL;
+					notification.defaults |= Notification.DEFAULT_SOUND;
+					notification.defaults |= Notification.DEFAULT_VIBRATE;
+					notification.defaults |= Notification.DEFAULT_LIGHTS;
 					PendingIntent actividad = PendingIntent.getActivity(this, 0,  new Intent(),0);
 					notification.setLatestEventInfo(this, "¡ESTUDIA!", "Sólo es un consejo :). Ánimo", actividad);
 					nm.notify(ID_NOTIFICATION2, notification);
@@ -207,7 +226,8 @@ public class MiServicioPreguntas extends Service {
 				}
 			}
 	     //este timer comenzará a funcionar cuando pasen 24horas, 86400000
-		}, 86400, UPDATE_INTERVAL2);
+		}, 86400000, UPDATE_INTERVAL2);
+		//	}, 8000, 8000);
 		//}, 10*1000, UPDATE_INTERVAL2);
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
 
@@ -221,15 +241,22 @@ public class MiServicioPreguntas extends Service {
 	        	String tarea = miraTasks();
 	    		Log.i("NQUEST", "numeropregrealizadas"
 	    				+ numeroPreguntasRealizadas);
+	    		
+	    		
+	    		
+	    		/*para mostrar nombre app en la pantalla
 	    		mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+" "+Integer.toString(numeroPreguntasRealizadas);
 	    		handler.post(toast);
+	    		*/
+	    		
+	    		
 	    		app = tarea.split("[.]")[1];	    		
 	            prefs = PreferenceManager.getDefaultSharedPreferences(MiServicioPreguntas.this);
 	    		//Obtenemos los valores de shared preferences
 	    		contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
 	    		numeroPreguntasRealizadas = prefs.getInt("numeroPreguntasRealizadas", 0);	
 	    		edit = prefs.edit();    		
-	    		if ((app.equals("facebook")) || (app.equals("instagram")) || (app.equals("clau"))|| (app.equals("twitter"))){
+	    		if ((app.equals("facebook"))|| (app.equals("tuenti")) || (app.equals("instagram")) || (app.equals("clau"))|| (app.equals("twitter"))){
 	    			contadorAppsOciosas++;
 	    			edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
 					edit.commit();

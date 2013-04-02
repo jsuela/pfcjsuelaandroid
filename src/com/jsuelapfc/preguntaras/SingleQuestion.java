@@ -54,6 +54,8 @@ public class SingleQuestion extends Activity {
 	
     private SharedPreferences prefs;
 	private String loginusuario;
+	private String asignatura;
+
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -178,6 +180,13 @@ public class SingleQuestion extends Activity {
                			    	nameValuePairs.add(new BasicNameValuePair("respuesta", radioGroupButton.getText().toString()));
                			    	nameValuePairs.add(new BasicNameValuePair("pregunta", lblName.getText().toString()));
                			    	nameValuePairs.add(new BasicNameValuePair("usuario", loginusuario));
+               			    	//añado asignatura a la respuesta
+       			    	        prefs = PreferenceManager.getDefaultSharedPreferences(SingleQuestion.this);
+       			    	        asignatura = prefs.getString("subject", "n/a");
+       			    			
+                    			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
+                    			
+
               			    	  
                			    	
                			    	

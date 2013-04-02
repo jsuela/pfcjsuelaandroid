@@ -1,13 +1,23 @@
 package com.jsuelapfc.preguntaras;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -46,7 +56,10 @@ public class ListadoCompaneros extends ListActivity {
 	private static final String TAG_FIELDS = "fields";
 	private static final String TAG_FIELDS_PUNTOS = "puntos";
 	private static final String TAG_FIELDS_USUARIO = "usuario";
-	private JSONParser jParser;
+
+	private JSONParserPOST jParser;
+    static InputStream is = null;
+	
 	private ArrayList<HashMap<String, String>> puntosList;
 
 	// contacts JSONArray
@@ -69,7 +82,9 @@ public class ListadoCompaneros extends ListActivity {
     
 	private int nPreguntasEnviadasAmigos;
 	private Editor edit;
-	private int limitePreguntasEnviadasAmigos = 10;
+	private int limitePreguntasEnviadasAmigos = 4;
+	
+	private String asignatura;
 
 
 	@Override
@@ -85,7 +100,7 @@ public class ListadoCompaneros extends ListActivity {
         puntosList = new ArrayList<HashMap<String, String>>();
  
         // Creating JSON Parser instance
-        jParser = new JSONParser();
+        jParser = new JSONParserPOST();
  
         // getting JSON string from URL
         url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
@@ -102,50 +117,127 @@ public class ListadoCompaneros extends ListActivity {
 
         protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
 
-	        prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
-	        loginusuario = prefs.getString("username", "n/a");
-		        try {
-			        JSONObject json = jParser.getJSONFromUrl(url);
-		            // Getting Array of Contacts
-		            puntos = json.getJSONArray(TAG_PUNTOS);
-		 
-		            // looping through All Contacts
-		            for(int i = 0; i < puntos.length(); i++){
-		                JSONObject c = puntos.getJSONObject(i);
-		 
-		                // Storing each json item in variable
-		                String pk = c.getString(TAG_PK);
-		                String model = c.getString(TAG_MODEL);
-		         
-		                // Respuestas is agin JSON Object
-		                JSONObject fields = c.getJSONObject(TAG_FIELDS);
-		                String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
-		                String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
-		  	                
-		                
-		                // creating new HashMap
-		                HashMap<String, String> map = new HashMap<String, String>();
-		 
-		                // adding each child node to HashMap key => value
-		                //muestro todos menos yo
+	        try {
+	        	
+		        prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
+		        loginusuario = prefs.getString("username", "n/a");
 
-		                map.put(TAG_PK, pk);
-		                map.put(TAG_MODEL, model);
-		                map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
-		                map.put(TAG_FIELDS_USUARIO, usuario);
-			            if(!(loginusuario.equals(usuario))){
-			                // adding HashList to ArrayList
-				            puntosList.add(map); 
-		                }
-		            } 
-		        } catch (Exception e) {
-  				mensaje = "No se puede conectar con el servidor. Inténtelo más tarde";
-  			 
-  				handler.post(toast);
-		            e.printStackTrace();
-		        }	
+         	    String csrf = null;
+         	    
+	        	HttpParams params = new BasicHttpParams();
+	        	HttpProtocolParams.setContentCharset(params, "utf-8");
+      			DefaultHttpClient httpclient = new DefaultHttpClient(params);
+				 
+
+			    	HttpGet httpget = new HttpGet(url);
+			    	HttpResponse response = httpclient.execute(httpget);
+   	
+			    	Header[] headers = response.getAllHeaders();
+			    	
+		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+
+			    	
+			    	for (int i = 0; i < headers.length; i++){	
+		    			System.out.println("cabeceraaaa:"+response.getParams().toString());
+			    		if (headers[i].toString().contains("csrftoken")){
+
+			    			csrf=headers[i].toString();
+			    			csrf = csrf.replace("Set-Cookie:","");
+			    			csrf = csrf.replace(" ","");
+			    			csrf = csrf.replace(";expires","");
+			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
+
+			    			
+
+			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
+            			//obtengo el nombre de la asignatura
+			    	        prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
+			    	        asignatura = prefs.getString("subject", "n/a");
+			    			
+            			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
+       			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+
+			    		}
+			    	} 
+       			    	
+				HttpPost httppost = new HttpPost(url);
+			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+
+		        
+		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+		        
+		        response = httpclient.execute(httppost);
+		        HttpEntity resEntityGet = response.getEntity();
+		        is = resEntityGet.getContent();
+
+    			
+				if (resEntityGet != null) {
+					
+					
+			        try{	
+				        JSONObject json = jParser.getJSONFromResponse(is);
+			            // Getting Array of Contacts
+			            puntos = json.getJSONArray(TAG_PUNTOS);
+			 
+			            // looping through All Contacts
+			            for(int i = 0; i < puntos.length(); i++){
+			                JSONObject c = puntos.getJSONObject(i);
+			 
+			                // Storing each json item in variable
+			                String pk = c.getString(TAG_PK);
+			                String model = c.getString(TAG_MODEL);
+			         
+			                // Respuestas is agin JSON Object
+			                JSONObject fields = c.getJSONObject(TAG_FIELDS);
+			                String puntos = fields.getString(TAG_FIELDS_PUNTOS);  
+			                String usuario = fields.getString(TAG_FIELDS_USUARIO);	    	    
+			  	                
+			                
+			                // creating new HashMap
+			                HashMap<String, String> map = new HashMap<String, String>();
+			 
+			                // adding each child node to HashMap key => value
+			                map.put(TAG_PK, pk);
+			                map.put(TAG_MODEL, model);
+			                map.put(TAG_FIELDS_PUNTOS, "Puntos: "+puntos);
+			                map.put(TAG_FIELDS_USUARIO, usuario);
+		
+				            if(!(loginusuario.equals(usuario))){
+				                // adding HashList to ArrayList
+					            puntosList.add(map); 
+			                }
+			            } 
+			        } catch (Exception e) {
+        				mensaje = "No se puede conectar con el servidor. Inténtelo más tarde";
+        			 
+        				handler.post(toast);
+			            e.printStackTrace();
+			        }
+					
+					
+					
+				} else {
+
+		        	mensaje = "Error al contactar con el servidor";
+		            handler.post(toast);		
+				}
+
+					
+					
+				} catch (Exception e) {
+					Log.i("ERROR", "CONECTION PROBLEM");
+		        	mensaje = "Imposible contactar con el servidor";
+		            handler.post(toast);
+
+				}
+			    pd.dismiss();
+			    
 				return puntosList;
-        }
+			
+
+
+
+      }
 
     protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
 	        //Damos nombre al botón
@@ -197,17 +289,60 @@ public class ListadoCompaneros extends ListActivity {
 							
 					        loginusuario = prefs.getString("username", "n/a");
 					        url2 = "http://pfc-jsuelaplaza.libresoft.es/android/enviapreguntaextra/"+loginusuario+"/"+destinatario;
+					        //url2 = "http://193.147.51.87:1235/android/enviapreguntaextra/"+loginusuario+"/"+destinatario;
 							
 		            		new Thread(new Runnable(){
 		            			@Override
 		                		public void run(){
 		            		        
 		    						try {
-		    							HttpClient client = new DefaultHttpClient();
-		    							String getURL = url2;
-		    							HttpGet get = new HttpGet(getURL);
-		    							HttpResponse responseGet = client.execute(get);
-		    							HttpEntity resEntityGet = responseGet.getEntity();
+		    							
+		    		               	    String csrf = null;
+		    		            		DefaultHttpClient httpclient = new DefaultHttpClient();
+		    								 
+
+		    		     			    HttpGet httpget = new HttpGet(url2);
+		    		     			    HttpResponse response = httpclient.execute(httpget);
+		    		         	
+		    		     			    Header[] headers = response.getAllHeaders();
+		    		     			    	
+		    		  			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+
+		    		     			    	
+		    		     			    	for (int i = 0; i < headers.length; i++){	
+		    		 			    			System.out.println("cabeceraaaa:"+response.getParams().toString());
+		    		     			    		if (headers[i].toString().contains("csrftoken")){
+
+		    		     			    			csrf=headers[i].toString();
+		    		     			    			csrf = csrf.replace("Set-Cookie:","");
+		    		     			    			csrf = csrf.replace(" ","");
+		    		     			    			csrf = csrf.replace(";expires","");
+		    		     			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
+
+		    		     			    			
+
+		    		     			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
+		    		     			    			//obtengo el nombre de la asignatura
+		    		     			    			prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
+		    		     			    			asignatura = prefs.getString("subject", "n/a");
+		    		     			    			
+		    		     			    			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
+		    		             			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+
+		    		     			    		}
+		    		     			    	} 
+		    		             			    	
+		    		  					HttpPost httppost = new HttpPost(url2);
+		    		     			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+
+		    		  			        
+		    		  			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+		    		  			        
+		    		  			        response = httpclient.execute(httppost);
+		    		  			        HttpEntity resEntityGet = response.getEntity();
+		    							
+		    							
+
 		    							if (resEntityGet != null) {
 		    								resultado = EntityUtils.toString(resEntityGet);
 		    								System.out.println("***************result list:"+resultado);
@@ -228,7 +363,7 @@ public class ListadoCompaneros extends ListActivity {
 
 		    									
 		    								}else if (resultado.equals("fail")){
-		    		        		        	mensaje = "No hay preguntas disponibles (de momento...)";
+		    		        		        	mensaje = "No hay preguntas disponibles para este compañero (de momento...)";
 		    		        		            handler.post(toast);
 		    		        		            
 		    								}else if (resultado.equals("no_user")){
@@ -274,7 +409,7 @@ public class ListadoCompaneros extends ListActivity {
 							}
 					//si hemos superado el limite de preguntas
 		    		}else{
-		    			Toast.makeText(ListadoCompaneros.this,"Has superado el limite de preguntas, inténtalo mañana"+Integer.toString(nPreguntasEnviadasAmigos), Toast.LENGTH_LONG).show();
+		    			Toast.makeText(ListadoCompaneros.this,"Has superado el limite de retos ("+Integer.toString(nPreguntasEnviadasAmigos)+"por día), inténtalo mañana", Toast.LENGTH_LONG).show();
 		    		}
 						
 				}

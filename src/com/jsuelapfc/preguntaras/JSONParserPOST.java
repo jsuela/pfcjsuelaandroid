@@ -43,8 +43,12 @@ public class JSONParserPOST {
             }
             is.close();
             json = sb.toString();
+            
+	        
+
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
+
         }
  
         // try parse the string to a JSON object
@@ -53,6 +57,7 @@ public class JSONParserPOST {
             
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing dataaaa " + e.toString()+ json);
+        	
         }
  
         // return JSON String
