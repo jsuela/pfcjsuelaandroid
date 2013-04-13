@@ -131,7 +131,7 @@ public class SubjectsRegister extends ListActivity {
         loginusuario = prefs.getString("username", "n/a");
         // getting JSON string from URL
         
-        url = "http://pfc-jsuelaplaza.libresoft.es/android/asignaturas/listado";
+        url = "http://pfc-jsuelaplaza.libresoft.es/android/asignaturas/listado/completo/"+loginusuario;
     	pd = ProgressDialog.show(SubjectsRegister.this, "Preguntas", "Cargando...", true, false);	
 
 	    new MiTarea().execute(url);

@@ -57,6 +57,7 @@ public class Tips extends ListActivity{
     private Context mContext;
     
 	private String asignatura;
+	private String usuario;
     private SharedPreferences prefs;
 
 
@@ -103,7 +104,7 @@ public class Tips extends ListActivity{
            	
        			    	Header[] headers = response.getAllHeaders();
        			    	
-    			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+    			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(3);
 
        			    	
        			    	for (int i = 0; i < headers.length; i++){	
@@ -119,11 +120,14 @@ public class Tips extends ListActivity{
        			    			
  
        			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
-                    			//obtengo el nombre de la asignatura
+                    			//obtengo el nombre de la asignatura y del usuario
        			    	        prefs = PreferenceManager.getDefaultSharedPreferences(Tips.this);
        			    	        asignatura = prefs.getString("subject", "n/a");
+       			    	        usuario = prefs.getString("username", "n/a");
+       			    	        
        			    			
                     			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
+                    			nameValuePairs.add(new BasicNameValuePair("usuario", usuario));
                			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
        			    		}

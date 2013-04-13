@@ -32,14 +32,20 @@ import android.widget.Toast;
 
 public class MiServicioPreguntas extends Service {
 	private Timer timer = new Timer();
+	//verdadero
 	private static final long UPDATE_INTERVAL = 60 * 1000;
+	//prueba
+	//private static final long UPDATE_INTERVAL = 5 * 1000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList<String> list = new ArrayList<String>();
 
 	private String mensaje;
 	private String app;
 	private int contadorAppsOciosas;
+	//verdadero
 	private int limiteOcio = 30;
+	//prueba
+	//private int limiteOcio = 2;
 	private int limitePreguntasAlDia = 10;
 	
 	private static final int ID_NOTIFICATION1 = 1;
@@ -160,7 +166,7 @@ public class MiServicioPreguntas extends Service {
 					notification.defaults |= Notification.DEFAULT_LIGHTS;
 					
 					PendingIntent actividad = PendingIntent.getActivity(this, 0,  new Intent(),0);
-					notification.setLatestEventInfo(this, "Te has librado de milagro...", "no quedan preguntas...es solo un aviso", actividad);
+					notification.setLatestEventInfo(this, "Te has librado de milagro...", "no quedan preguntas. Es solo un aviso", actividad);
 					nm.notify(ID_NOTIFICATION3, notification);
 					
 				}else{
@@ -183,6 +189,28 @@ public class MiServicioPreguntas extends Service {
 		} catch (Exception e) {
 			Log.i("ERROR", "*******CONECTION PROBLEM********");
 		}
+	}
+	
+	public void sumaTiempoOcioso(){
+		String resultado;
+		//le sumo al contador que almaceno en la base de datos del servidor 
+		//
+
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        loginusuario = prefs.getString("username", "n/a");
+        url = "http://pfc-jsuelaplaza.libresoft.es/android/sumatiempo/"+loginusuario;	
+        //url = "http://193.147.51.87:1234/android/sumatiempo/"+loginusuario;	
+        
+		try {
+			HttpClient client = new DefaultHttpClient();
+			String getURL = url;
+			HttpGet get = new HttpGet(getURL);
+			HttpResponse responseGet = client.execute(get);
+			HttpEntity resEntityGet = responseGet.getEntity();
+		} catch (Exception e) {
+			Log.i("ERROR", "No importa perdida, es tiempo estimado");
+		}
+		
 	}
 	
 	private void checkNumberOfQuestions() {
@@ -263,6 +291,7 @@ public class MiServicioPreguntas extends Service {
 	    		}
 	    		if ((contadorAppsOciosas > limiteOcio) && (numeroPreguntasRealizadas <= limitePreguntasAlDia)){
 	    			lanzaNotificacion();
+	    			sumaTiempoOcioso();
 	    			contadorAppsOciosas=0;
 					edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
 					numeroPreguntasRealizadas++;

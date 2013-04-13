@@ -108,8 +108,11 @@ public class Ranking extends ListActivity{
 	        jParser = new JSONParserPOST();
 	 
 	        // getting JSON string from URL
-	        //url = "http://193.147.51.87:1235/android/clasificacion";	
-	        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
+	        
+   	        prefs = PreferenceManager.getDefaultSharedPreferences(Ranking.this);
+   	        loginusuario = prefs.getString("username", "n/a");
+   	        //url = "http://193.147.51.87:1235/android/clasificacion/"+loginusuario;	
+	        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion/"+loginusuario;	
 	        
 	    	pd = ProgressDialog.show(Ranking.this, "Preguntas", "Cargando...", true, false);	
 
