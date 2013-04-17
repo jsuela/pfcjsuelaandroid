@@ -45,7 +45,7 @@ public class MiServicioPreguntas extends Service {
 	//verdadero
 	private int limiteOcio = 30;
 	//prueba
-	//private int limiteOcio = 2;
+	//private int limiteOcio = 1;
 	private int limitePreguntasAlDia = 10;
 	
 	private static final int ID_NOTIFICATION1 = 1;
@@ -254,9 +254,9 @@ public class MiServicioPreguntas extends Service {
 				}
 			}
 	     //este timer comenzará a funcionar cuando pasen 24horas, 86400000
-		}, 86400000, UPDATE_INTERVAL2);
+		//}, 86400000, UPDATE_INTERVAL2);
 		//	}, 8000, 8000);
-		//}, 10*1000, UPDATE_INTERVAL2);
+		}, 10*1000, UPDATE_INTERVAL2);
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
 
 	}

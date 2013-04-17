@@ -17,7 +17,7 @@
 		android:textStyle="bold|italic"
 		android:textColor="#FFFFFF"
 		android:textSize="20dip"
-		android:background= "#0A2A29" 
+		android:background= "#B40404" 
 />
  
 	  

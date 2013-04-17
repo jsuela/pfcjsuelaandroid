@@ -112,7 +112,7 @@ public class Subjects extends ListActivity {
         super.onCreate(savedInstanceState);
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
  	    //para que no rote setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        setContentView(R.layout.subjects);
+        setContentView(R.layout.mysubjects);
         
         lv = (ListView)findViewById(android.R.id.list);
 		tv = (TextView)findViewById(R.id.titulo);

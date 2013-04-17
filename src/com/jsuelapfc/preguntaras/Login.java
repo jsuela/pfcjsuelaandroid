@@ -91,13 +91,22 @@ public class Login extends Activity {
 			}
 		}
 		
-    	button2.setOnClickListener(new View.OnClickListener() {
+    	/*button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
               	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://pfc-jsuelaplaza.libresoft.es/signin"));
             	startActivity(i);
             	
             }
+        });*/
+		button2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+	     		Intent in = new Intent(getApplicationContext(), Signin.class);
+	     		startActivity(in);
+				finish();
+            	
+            }
         });
+		
 		
 		
 		//si pulsamos al boton de entrar
