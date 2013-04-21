@@ -238,6 +238,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             MainActivity.class);
         
 	    //Bundle b = new Bundle();
+        System.out.println(msg);
         if (msg.contains("Te ha enviado una pregunta")){
         	//el mensaje viene asi: asigantura += Te ha enviado una pregunta + usuario
         	String msgAsignatura = msg.split("=")[0];

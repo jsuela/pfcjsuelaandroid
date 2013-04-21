@@ -9,7 +9,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -22,7 +21,6 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.SharedPreferences;
@@ -103,7 +101,9 @@ public class ListadoCompaneros extends ListActivity {
         jParser = new JSONParserPOST();
  
         // getting JSON string from URL
-        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion";	
+        prefs = PreferenceManager.getDefaultSharedPreferences(ListadoCompaneros.this);
+        loginusuario = prefs.getString("username", "n/a");
+        url = "http://pfc-jsuelaplaza.libresoft.es/android/clasificacion/"+loginusuario;
         
     	pd = ProgressDialog.show(ListadoCompaneros.this, "Preguntas", "Cargando...", true, false);	
 

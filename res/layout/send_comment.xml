@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+
+	  <TextView
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:paddingTop = "30dip"
+		  android:layout_marginLeft="10dip"
+		  android:textStyle="bold|italic"
+		  android:textColor="#FFF"
+		  android:text = "Escribe tu comentario, sugerencia o avisa de un error: ">
+	  </TextView>
+	
+	
+		  <EditText
+			  android:layout_width="fill_parent"
+			  android:layout_height="wrap_content"
+			  android:layout_marginTop="5dip"
+			  android:layout_marginLeft="10dip"
+			  android:layout_marginRight="10dip"
+			  android:id="@+id/comentario"
+			  >
+	  	</EditText>
+	  	
+	  	
+
+	  	<Button 
+	        	android:id="@+id/enviar"
+			  android:layout_width="wrap_content"
+			  android:layout_height="wrap_content"
+	        	android:layout_marginTop = "25dip"
+	        	android:layout_marginBottom = "0dip"
+	      		android:layout_gravity="center"
+	        	/>
+
+
+	
+	
+</LinearLayout>
+

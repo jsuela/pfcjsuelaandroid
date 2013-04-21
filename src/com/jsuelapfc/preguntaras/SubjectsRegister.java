@@ -8,7 +8,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -18,12 +17,10 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -114,7 +111,7 @@ public class SubjectsRegister extends ListActivity {
         lv = (ListView)findViewById(android.R.id.list);
 		irA = (Button) findViewById(R.id.matricularse);
 		tv = (TextView)findViewById(R.id.titulo);
-		tv.setText("Listado de todas las asignaturas");
+		tv.setText("¡Matrículate! Listado de todas las asignaturas");
 		
 
 

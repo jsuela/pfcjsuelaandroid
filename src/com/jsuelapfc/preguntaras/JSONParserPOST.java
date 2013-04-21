@@ -1,20 +1,9 @@
 package com.jsuelapfc.preguntaras;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,6 +29,7 @@ public class JSONParserPOST {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "n");
+                //System.out.println(line);
             }
             is.close();
             json = sb.toString();
@@ -53,11 +43,13 @@ public class JSONParserPOST {
  
         // try parse the string to a JSON object
         try {
+            System.out.println(json);
             jObj = new JSONObject(json);
+
             
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing dataaaa " + e.toString()+ json);
-        	
+
         }
  
         // return JSON String

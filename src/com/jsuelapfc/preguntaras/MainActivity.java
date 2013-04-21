@@ -10,14 +10,10 @@ import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gcm.GCMRegistrar;
@@ -83,6 +79,7 @@ public class MainActivity extends TabActivity {
 
         //almacenamos la asignatura en shared preferences si cambia, es decir, si es distinto de null
         if (cambiaAsignatura!=null){
+
     		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 			Editor edit = prefs.edit();
 			edit.putString("subject", cambiaAsignatura);
@@ -191,7 +188,7 @@ public class MainActivity extends TabActivity {
     }
     
  // Añadiendo las opciones de menú
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_main, menu);
@@ -226,7 +223,7 @@ public class MainActivity extends TabActivity {
             default:
                return super.onOptionsItemSelected(item);
         }
-    }
+    }*/
     
 }
 

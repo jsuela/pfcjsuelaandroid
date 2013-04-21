@@ -192,7 +192,7 @@ public class MiServicioPreguntas extends Service {
 	}
 	
 	public void sumaTiempoOcioso(){
-		String resultado;
+		//String resultado;
 		//le sumo al contador que almaceno en la base de datos del servidor 
 		//
 
@@ -254,9 +254,9 @@ public class MiServicioPreguntas extends Service {
 				}
 			}
 	     //este timer comenzará a funcionar cuando pasen 24horas, 86400000
-		//}, 86400000, UPDATE_INTERVAL2);
+		}, 86400000, UPDATE_INTERVAL2);
 		//	}, 8000, 8000);
-		}, 10*1000, UPDATE_INTERVAL2);
+		//}, 10*1000, UPDATE_INTERVAL2);
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
 
 	}
@@ -272,10 +272,10 @@ public class MiServicioPreguntas extends Service {
 	    		
 	    		
 	    		
-	    		/*para mostrar nombre app en la pantalla
-	    		mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+" "+Integer.toString(numeroPreguntasRealizadas);
-	    		handler.post(toast);
-	    		*/
+	    		//para mostrar nombre app en la pantalla
+	    		/*mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+" "+Integer.toString(numeroPreguntasRealizadas);
+	    		handler.post(toast);*/
+	    		
 	    		
 	    		
 	    		app = tarea.split("[.]")[1];	    		

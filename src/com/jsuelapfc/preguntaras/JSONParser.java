@@ -8,7 +8,6 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -75,6 +74,7 @@ public class JSONParser {
             
         } catch (JSONException e) {
             Log.e("JSON Parser", "Error parsing dataaaa " + e.toString()+ json);
+            System.out.println(e);
         }
  
         // return JSON String

@@ -2,44 +2,29 @@ package com.jsuelapfc.preguntaras;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class Subjects extends ListActivity {
 	
@@ -116,7 +101,7 @@ public class Subjects extends ListActivity {
         
         lv = (ListView)findViewById(android.R.id.list);
 		tv = (TextView)findViewById(R.id.titulo);
-		tv.setText("Carga los datos de una de las asignaturas matriculadas");
+		tv.setText("Carga los datos de una de tus asignaturas matriculadas");
 
         
         // Hashmap for ListView
@@ -219,11 +204,13 @@ public class Subjects extends ListActivity {
 	            public void onItemClick(AdapterView<?> parent, View view,
 	                    int position, long id) {
 	                    //getting values from selected ListItem
+
                     Intent in = new Intent(getApplicationContext(), MainActivity.class);
                     String name= ((TextView) view.findViewById(android.R.id.text1)).getText().toString();
                     //Una vez que tenga todo descomentar la siguiente linea
                     in.putExtra(TAG_FIELDS_ASIGNATURA, name);
                     System.out.println("***********la asignaturaes:"+name);
+	            	
                     startActivity(in);
                     finish();
 	        }
@@ -277,5 +264,15 @@ public class Subjects extends ListActivity {
 
  		}
  	};
+ 	
+ 	@Override
+ 	public void onBackPressed() {
+ 		System.out.println("pulso back********");
+ 		finish();
+        Intent in = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(in);
+        finish();
+ 	
+ 	}
 
 }

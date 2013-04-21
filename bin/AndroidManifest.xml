@@ -67,6 +67,7 @@
 		<activity android:name=".Subjects" android:configChanges="keyboardHidden|orientation"></activity>  
 		<activity android:name=".SubjectsRegister" android:configChanges="keyboardHidden|orientation"></activity>  
 		<activity android:name=".Signin" android:configChanges="keyboardHidden|orientation"></activity>  
+		<activity android:name=".SendingComments" android:configChanges="keyboardHidden|orientation"></activity>  
 		
         
 		<service android:name=".GCMIntentService" />

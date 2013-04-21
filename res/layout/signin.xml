@@ -136,7 +136,7 @@
 		  android:layout_marginLeft="10dip"
 		  android:textStyle="bold|italic"
 		  android:textColor="#FFF"
-		  android:text = "Si no encuentras tu colegio, avisa a tu profesor para darlo de alta">
+		  android:text = "Si no encuentras tu colegio o universidad, avisa a tu profesor para darlo de alta">
 	  </TextView>
 
 	  	

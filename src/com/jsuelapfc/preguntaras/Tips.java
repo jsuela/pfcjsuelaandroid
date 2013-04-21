@@ -20,12 +20,16 @@ import org.json.JSONObject;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -59,6 +63,9 @@ public class Tips extends ListActivity{
 	private String asignatura;
 	private String usuario;
     private SharedPreferences prefs;
+    
+    private Button lblEnvComment;
+    private Button btnDisplay;
 
 
 	   @Override
@@ -67,7 +74,7 @@ public class Tips extends ListActivity{
 	        //para que no gire a modo landscape
 	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-	        setContentView(R.layout.questions);
+	        setContentView(R.layout.list_tips);
 
 	        mContext = this;
 
@@ -195,6 +202,13 @@ public class Tips extends ListActivity{
 	          }
 
 	          protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
+	        	  
+	        	  
+    	        //Damos nombre al botón
+    	        //el siguiente método se ejecutará cuando se presione el botón
+    	        lblEnvComment = (Button) findViewById(R.id.envia_comment);
+    	        lblEnvComment.setText("Envía comentario al profesor");
+    	        addListenerOnButton();
 
 	        	  ListAdapter adapter = new SimpleAdapter(Tips.this, result,
 	  	        		R.layout.list_tips_item,
@@ -206,6 +220,25 @@ public class Tips extends ListActivity{
 	        	 pd.dismiss();
 	          }
 	    }
+	     
+	     
+		 public void addListenerOnButton() {
+			 
+				btnDisplay = (Button) findViewById(R.id.envia_comment);
+			 
+				btnDisplay.setOnClickListener(new OnClickListener() {
+			 
+					@Override
+					public void onClick(View v) {
+
+			            //Starting new intent
+			            Intent in = new Intent(getApplicationContext(), SendingComments.class);
+			            startActivity(in);
+		         	};
+			 
+				});
+			 
+			  }
       	final Runnable toast = new Runnable(){
      		public void run(){
          		Toast.makeText(mContext,

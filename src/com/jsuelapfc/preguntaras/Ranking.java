@@ -1,4 +1,4 @@
-package com.jsuelapfc.preguntaras;
+	package com.jsuelapfc.preguntaras;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -99,7 +99,7 @@ public class Ranking extends ListActivity{
 			Calendar cal1 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
 
 			// Start every 60 seconds
-	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 60*1000, pintent); 
+	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 86400*1000, pintent); 
 	 
 	        // Hashmap for ListView
 	        puntosList = new ArrayList<HashMap<String, String>>();

@@ -36,12 +36,37 @@ de tus compañeros de clase, por lo que si estás aburrido podrás pedir una pre
 para poder escalar a los primeros puestos, o bien retar a un compañero con una pregunta 'amistosa' 
 para que baje puestos.
 
-Las puntuaciones obtenidas dependiendo del tipo de pregunta son:
+Las puntuaciones obtenidas dependiendo del tipo de pregunta que respondes son:
 
-multa: acierto +2 fallo -1
-extra: acierto +3 fallo -1
-amistosa: acierto +1 fallo -2
 ">
+	  </TextView>
+	  
+	  	  <TextView
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:paddingTop = "5dip"
+		  android:layout_marginLeft="10dip"
+		  android:textStyle="bold|italic"
+		  android:textColor="#FFF"
+		  android:text = "multa:	acierto +2 fallo -1">
+	  </TextView>
+	  	  	  <TextView
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:paddingTop = "5dip"
+		  android:layout_marginLeft="10dip"
+		  android:textStyle="bold|italic"
+		  android:textColor="#FFF"
+		  android:text = "extra:	acierto +3 fallo -1">
+	  </TextView>
+	  	  	  	  <TextView
+		  android:layout_width="fill_parent"
+		  android:layout_height="wrap_content"
+		  android:paddingTop = "5dip"
+		  android:layout_marginLeft="10dip"
+		  android:textStyle="bold|italic"
+		  android:textColor="#FFF"
+		  android:text = "amistosa:	acierto +1 fallo -2">
 	  </TextView>
 	
 
