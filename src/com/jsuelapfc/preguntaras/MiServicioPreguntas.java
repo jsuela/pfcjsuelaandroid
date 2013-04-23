@@ -33,9 +33,9 @@ import android.widget.Toast;
 public class MiServicioPreguntas extends Service {
 	private Timer timer = new Timer();
 	//verdadero
-	private static final long UPDATE_INTERVAL = 60 * 1000;
+	//private static final long UPDATE_INTERVAL = 60 * 1000;
 	//prueba
-	//private static final long UPDATE_INTERVAL = 5 * 1000;
+	private static final long UPDATE_INTERVAL = 5 * 1000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList<String> list = new ArrayList<String>();
 
@@ -72,6 +72,12 @@ public class MiServicioPreguntas extends Service {
 	private int numeroPreguntasRealizadas;
 	
 	private int nPreguntasEnviadasAmigos;
+	
+	//solo para ver en toast
+	private int nPreguntasEnviadasAmigospantalla;
+	private int contadorPreguntasExtraAldiapantalla;
+	
+	private int contadorPreguntasExtraAldia;
 
 	
 	private Editor edit;
@@ -230,6 +236,11 @@ public class MiServicioPreguntas extends Service {
 				//reinicio el contador de preguntas que podemos realizar a amigos
 				nPreguntasEnviadasAmigos=0;
     			edit.putInt("nPreguntasEnviadasAmigos", nPreguntasEnviadasAmigos);
+				
+				
+				//reinicio el contador de preguntas extra que podemos realizar
+				contadorPreguntasExtraAldia=0;
+				edit.putInt("contadorPreguntasExtraAldia", contadorPreguntasExtraAldia);
 				edit.commit();
 				
 				Log.i("NPreguntasaAmigos", "n preg reseteado a:"+ nPreguntasEnviadasAmigos);
@@ -253,8 +264,11 @@ public class MiServicioPreguntas extends Service {
 					
 				}
 			}
-	     //este timer comenzará a funcionar cuando pasen 24horas, 86400000
-		}, 86400000, UPDATE_INTERVAL2);
+	     //este timer comenzará a funcionar cuando pase 3 segundos
+		}, 5000, UPDATE_INTERVAL2);
+			
+			//}, 0, 300*1000);
+
 		//	}, 8000, 8000);
 		//}, 10*1000, UPDATE_INTERVAL2);
 		Log.i(getClass().getSimpleName(), "Timer2 started.");
@@ -273,7 +287,12 @@ public class MiServicioPreguntas extends Service {
 	    		
 	    		
 	    		//para mostrar nombre app en la pantalla
-	    		/*mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+" "+Integer.toString(numeroPreguntasRealizadas);
+	    		//nPreguntasEnviadasAmigospantalla = prefs.getInt("nPreguntasEnviadasAmigos", 0);	
+	    		//contadorPreguntasExtraAldiapantalla = prefs.getInt("contadorPreguntasExtraAldia", 0);	
+	    		
+	    		
+	    		
+	    		/*mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+"a amigos "+Integer.toString(nPreguntasEnviadasAmigospantalla)+"extras "+Integer.toString(contadorPreguntasExtraAldiapantalla);
 	    		handler.post(toast);*/
 	    		
 	    		

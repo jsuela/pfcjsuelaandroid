@@ -24,6 +24,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -80,6 +81,13 @@ public class QuestionsList extends ListActivity{
     private Button lblEnvResp;
     
 	private String asignatura;
+	
+	//variable para controlar el numero de preguntas extra al día
+	private int limitePreguntasExtraAlDia = 6;
+	
+	private int contadorPreguntasExtraAldia;
+	
+	private Editor edit;
 
 
 	
@@ -291,102 +299,124 @@ public class QuestionsList extends ListActivity{
 		 
 			public void pidePreguntaExtra(){
 				
-				//primero pido pregunta al servidor, luego lanzo notificacion
-		        // getting new question
-		        prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
-		        loginusuario = prefs.getString("username", "n/a");
-		        url = "http://pfc-jsuelaplaza.libresoft.es/android/preguntaextra/"+loginusuario;
-		        
-	            final ProgressDialog pd1 = ProgressDialog.show(QuestionsList.this, "Preguntas", "Cargando...", true, false);
 
-	    		new Thread(new Runnable(){
-	    			@Override
-	        		public void run(){
-		        
-						try {
-							
-							
-		               	    String csrf = null;
-		            		DefaultHttpClient httpclient = new DefaultHttpClient();
-								 
+				
+				//primero miro si ha pedido ya demasiadas preguntas extra en un día primero pido pregunta al servidor, luego lanzo notificacion
+	    		//Obtenemos los valores de shared preferences
+				contadorPreguntasExtraAldia = prefs.getInt("contadorPreguntasExtraAldia", 0);
+				if (contadorPreguntasExtraAldia < limitePreguntasExtraAlDia){
+				
 
-		     			    HttpGet httpget = new HttpGet(url);
-		     			    HttpResponse response = httpclient.execute(httpget);
-		         	
-		     			    Header[] headers = response.getAllHeaders();
-		     			    	
-		  			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+				
+					// getting new question
+			        prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
+			        loginusuario = prefs.getString("username", "n/a");
+			        url = "http://pfc-jsuelaplaza.libresoft.es/android/preguntaextra/"+loginusuario;
+			        
+		            final ProgressDialog pd1 = ProgressDialog.show(QuestionsList.this, "Preguntas", "Cargando...", true, false);
+	
+		    		new Thread(new Runnable(){
+		    			@Override
+		        		public void run(){
+			        
+							try {
+								
+								
+			               	    String csrf = null;
+			            		DefaultHttpClient httpclient = new DefaultHttpClient();
+									 
+	
+			     			    HttpGet httpget = new HttpGet(url);
+			     			    HttpResponse response = httpclient.execute(httpget);
+			         	
+			     			    Header[] headers = response.getAllHeaders();
+			     			    	
+			  			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+	
+			     			    	
+			     			    	for (int i = 0; i < headers.length; i++){	
+			 			    			System.out.println("cabeceraaaa:"+response.getParams().toString());
+			     			    		if (headers[i].toString().contains("csrftoken")){
+	
+			     			    			csrf=headers[i].toString();
+			     			    			csrf = csrf.replace("Set-Cookie:","");
+			     			    			csrf = csrf.replace(" ","");
+			     			    			csrf = csrf.replace(";expires","");
+			     			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
+	
+			     			    			
+	
+			     			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
+			     			    			//obtengo el nombre de la asignatura
+			     			    			prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
+			     			    			asignatura = prefs.getString("subject", "n/a");
+			     			    			
+			     			    			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
+			             			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+	
+			     			    		}
+			     			    	} 
+			             			    	
+			  					HttpPost httppost = new HttpPost(url);
+			     			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+	
+			  			        
+			  			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
+			  			        
+			  			        response = httpclient.execute(httppost);
+			  			        HttpEntity resEntityGet = response.getEntity();
+	
+	
+								if (resEntityGet != null) {
+									resultado = EntityUtils.toString(resEntityGet);
+									if (resultado.equals("ok")){
+			        					//incremento el valor también en shared preferences
+			        					contadorPreguntasExtraAldia++;
+			        					edit = prefs.edit();
+			        	    			edit.putInt("contadorPreguntasExtraAldia", contadorPreguntasExtraAldia);
+			        					edit.commit();
+										
+										
+								        //getting notification
+										finish();
+										Intent in = new Intent(getApplicationContext(), MainActivity.class);
+			        				    /*Bundle b = new Bundle();
+			        					b.putCharSequence("notify", "1");
+			        					in.putExtras(b);*/
+										in.putExtra("notify", "1");
+			        					startActivity(in);
+			        					
 
-		     			    	
-		     			    	for (int i = 0; i < headers.length; i++){	
-		 			    			System.out.println("cabeceraaaa:"+response.getParams().toString());
-		     			    		if (headers[i].toString().contains("csrftoken")){
-
-		     			    			csrf=headers[i].toString();
-		     			    			csrf = csrf.replace("Set-Cookie:","");
-		     			    			csrf = csrf.replace(" ","");
-		     			    			csrf = csrf.replace(";expires","");
-		     			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
-
-		     			    			
-
-		     			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
-		     			    			//obtengo el nombre de la asignatura
-		     			    			prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
-		     			    			asignatura = prefs.getString("subject", "n/a");
-		     			    			
-		     			    			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
-		             			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-
-		     			    		}
-		     			    	} 
-		             			    	
-		  					HttpPost httppost = new HttpPost(url);
-		     			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-
-		  			        
-		  			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
-		  			        
-		  			        response = httpclient.execute(httppost);
-		  			        HttpEntity resEntityGet = response.getEntity();
-
-
-							if (resEntityGet != null) {
-								resultado = EntityUtils.toString(resEntityGet);
-								if (resultado.equals("ok")){
-							        //getting notification
-									finish();
-									Intent in = new Intent(getApplicationContext(), MainActivity.class);
-		        				    /*Bundle b = new Bundle();
-		        					b.putCharSequence("notify", "1");
-		        					in.putExtras(b);*/
-									in.putExtra("notify", "1");
-		        					startActivity(in);
-		        					
-		        					
-		        		        	mensaje = "Pregunta añadida";
-		        		            handler.post(toast);
-		
-									
-								}else{
-		        		        	mensaje = "No hay más preguntas disponibles (de momento...)";
-		        		            handler.post(toast);
-		
+			        					
+			        					
+			        		        	mensaje = "Pregunta añadida";
+			        		            handler.post(toast);
+			
+										
+									}else{
+			        		        	mensaje = "No hay más preguntas disponibles (de momento...)";
+			        		            handler.post(toast);
+			
+									}
+								} else {
+			
+		        		        	mensaje = "Error al contactar con el servidor";
+		        		            handler.post(toast);		
 								}
-							} else {
-		
-	        		        	mensaje = "Error al contactar con el servidor";
-	        		            handler.post(toast);		
+							} catch (Exception e) {
+								Log.i("ERROR", "CONECTION PROBLEM");
+	        		        	mensaje = "No se puede contactar con el servidor";
+	        		            handler.post(toast);
+			
 							}
-						} catch (Exception e) {
-							Log.i("ERROR", "CONECTION PROBLEM");
-        		        	mensaje = "No se puede contactar con el servidor";
-        		            handler.post(toast);
-		
-						}
-					    pd1.dismiss();
-	    			}
-	     		}).start();
+						    pd1.dismiss();
+		    			}
+		     		}).start();
+				}//si ha superado el límite de preguntas extra al día
+				else{
+		        	mensaje = "Has superado el limite de preguntas extra por día ("+Integer.toString(contadorPreguntasExtraAldia)+"por día), inténtalo mañana";
+		            handler.post(toast);
+				}
 		        
 
 			}

@@ -80,7 +80,7 @@ public class ListadoCompaneros extends ListActivity {
     
 	private int nPreguntasEnviadasAmigos;
 	private Editor edit;
-	private int limitePreguntasEnviadasAmigos = 4;
+	private int limitePreguntasEnviadasAmigos = 6;
 	
 	private String asignatura;
 
@@ -279,7 +279,7 @@ public class ListadoCompaneros extends ListActivity {
 		    		nPreguntasEnviadasAmigos = prefs.getInt("nPreguntasEnviadasAmigos", 0);	
 		    		
 		    		//miramos si hemos llegado al limite de preguntas a enviar o no
-		    		if (nPreguntasEnviadasAmigos<limitePreguntasEnviadasAmigos){	
+		    		if (nPreguntasEnviadasAmigos<=limitePreguntasEnviadasAmigos){	
 						final ProgressDialog pd1 = ProgressDialog.show(ListadoCompaneros.this, "Preguntas", "Enviando...", true, false);
 						try{
 	
