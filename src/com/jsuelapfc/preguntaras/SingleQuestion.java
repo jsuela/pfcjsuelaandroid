@@ -116,8 +116,8 @@ public class SingleQuestion extends Activity {
 					// find the radiobutton by returned id
 					radioGroupButton = (RadioButton) findViewById(selectedId);
 					 
-					Toast.makeText(SingleQuestion.this,"Respuesta elegida: "+
-						radioGroupButton.getText(), Toast.LENGTH_SHORT).show();
+					/*Toast.makeText(SingleQuestion.this,"Respuesta elegida: "+
+						radioGroupButton.getText(), Toast.LENGTH_SHORT).show();*/
 					
 		
 

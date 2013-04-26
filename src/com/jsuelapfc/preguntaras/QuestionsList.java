@@ -83,7 +83,7 @@ public class QuestionsList extends ListActivity{
 	private String asignatura;
 	
 	//variable para controlar el numero de preguntas extra al día
-	private int limitePreguntasExtraAlDia = 6;
+	private int limitePreguntasExtraAlDia = 2;
 	
 	private int contadorPreguntasExtraAldia;
 	
@@ -414,7 +414,7 @@ public class QuestionsList extends ListActivity{
 		     		}).start();
 				}//si ha superado el límite de preguntas extra al día
 				else{
-		        	mensaje = "Has superado el limite de preguntas extra por día ("+Integer.toString(contadorPreguntasExtraAldia)+"por día), inténtalo mañana";
+		        	mensaje = "Has pedido "+Integer.toString(contadorPreguntasExtraAldia)+" preguntas extra... Relax! Estudia y prueba en un rato";
 		            handler.post(toast);
 				}
 		        

@@ -24,16 +24,20 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
 import android.app.AlarmManager;
 import android.app.ListActivity;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
@@ -81,6 +85,8 @@ public class Ranking extends ListActivity{
     private SharedPreferences prefs;
 	private String loginusuario;
 	
+	private MiServicioPreguntas s;
+	
 	
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
@@ -92,15 +98,30 @@ public class Ranking extends ListActivity{
 
 	        //Llamamos al servicio
 				        
-	        Intent intent = new Intent(this, MiServicioPreguntas.class);
+	        /*Intent intent = new Intent(this, MiServicioPreguntas.class);
 	        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
 
 	        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
 			Calendar cal1 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
 
 			// Start every 60 seconds
-	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 86400*1000, pintent); 
+	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 5*1000, pintent); */
+	        
+	        
+	        //Llamamos al servicio
+	        /*
+	        Intent intent2 = new Intent(this, MiServicioPreguntas.class);
+	        PendingIntent pintent2 = PendingIntent.getService(this, 0, intent2, 0);
+
+	        AlarmManager alarm2 = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+			Calendar cal2 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
+
+			// Start every 60 seconds
+	        alarm2.setRepeating(AlarmManager.RTC_WAKEUP, cal2.getTimeInMillis(), 30*1000, pintent2); */
 	 
+	        startService(new Intent(getApplicationContext(), MiServicioPreguntas.class));
+	  
+	        
 	        // Hashmap for ListView
 	        puntosList = new ArrayList<HashMap<String, String>>();
 	 
@@ -312,7 +333,7 @@ public class Ranking extends ListActivity{
      		}
      	};
 	     
-}
+
    
 	/*
 	 * 
@@ -324,7 +345,7 @@ public class Ranking extends ListActivity{
 	 *    
 	 *    SERVICIO
 	 */
-		/*void doBindService() {
+		void doBindService() {
 			Log.i("Service JAVI", "entro en doBindService");
 			getApplicationContext().bindService(new Intent(this, MiServicioPreguntas.class), mConnection,
 					Context.BIND_AUTO_CREATE);
@@ -347,7 +368,9 @@ public class Ranking extends ListActivity{
 			}
 		};
 		
-		public void showServiceData(View view) {
+}
+		
+		/*public void showServiceData(View view) {
 			if (s != null) {
 				List<String> wordList = s.getWordList();
 				values.clear();

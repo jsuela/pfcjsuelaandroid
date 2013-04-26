@@ -31,12 +31,12 @@
 		  android:text = "Debes saber...
 La aplicación multa el exceso uso de redes sociales o aplicaciones relacionadas con el ocio
 como Facebook, Instagram, Twitter... La multa a pagar será responder una pregunta tipo test.
-La aplicación tiene un apartado llamado ranking en el que podrás ver tu posición respecto la 
+La aplicación tiene un apartado llamado ranking en el que podrás ver tu posición respecto a la 
 de tus compañeros de clase, por lo que si estás aburrido podrás pedir una pregunta extra
 para poder escalar a los primeros puestos, o bien retar a un compañero con una pregunta 'amistosa' 
 para que baje puestos.
 
-Las puntuaciones obtenidas dependiendo del tipo de pregunta que respondes son:
+Las puntuaciones obtenidas dependiendo del tipo de pregunta que respondas son:
 
 ">
 	  </TextView>

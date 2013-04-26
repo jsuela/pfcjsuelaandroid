@@ -33,9 +33,10 @@ import android.widget.Toast;
 public class MiServicioPreguntas extends Service {
 	private Timer timer = new Timer();
 	//verdadero
+	
 	//private static final long UPDATE_INTERVAL = 60 * 1000;
 	//prueba
-	private static final long UPDATE_INTERVAL = 5 * 1000;
+	private static final long UPDATE_INTERVAL = 60 * 1000;
 	private final IBinder mBinder = new MyBinder();
 	private ArrayList<String> list = new ArrayList<String>();
 
@@ -65,8 +66,8 @@ public class MiServicioPreguntas extends Service {
 	
 	//segundo timer
 	private Timer timer2 = new Timer();
-	//24horas
-	private static final long UPDATE_INTERVAL2 = 86400 *1000;
+	//20min
+	private static final long UPDATE_INTERVAL2 = 1200*1000;
 
 
 	private int numeroPreguntasRealizadas;
@@ -228,7 +229,7 @@ public class MiServicioPreguntas extends Service {
 				
 	            prefs = PreferenceManager.getDefaultSharedPreferences(MiServicioPreguntas.this);
 	    		//Obtenemos los valores de shared preferences
-	    		contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
+	    		//contadorAppsOciosas = prefs.getInt("contadorAppsOciosas", 0);	
 	    		numeroPreguntasRealizadas = prefs.getInt("numeroPreguntasRealizadas", 0);	
 	    		//editor para posteriormente cambair valores
 	    		edit = prefs.edit();
@@ -245,27 +246,27 @@ public class MiServicioPreguntas extends Service {
 				
 				Log.i("NPreguntasaAmigos", "n preg reseteado a:"+ nPreguntasEnviadasAmigos);
 
-				if (numeroPreguntasRealizadas == 0){
+				//if (numeroPreguntasRealizadas == 0){
+	
 					/*lanzaNotificacion();
-					numeroPreguntasRealizadas++;*/		
-					lanzaNotificacion();
 					numeroPreguntasRealizadas++;
 	    			edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
-					edit.commit();
-				}else{
+					edit.commit();*/
+				//}else{
 					numeroPreguntasRealizadas=0;
-					contadorAppsOciosas=0;
+					//contadorAppsOciosas=0;
 	    			edit.putInt("numeroPreguntasRealizadas", numeroPreguntasRealizadas);
-	    			edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
+	    			//edit.putInt("contadorAppsOciosas", contadorAppsOciosas);
 					edit.commit();
 					Calendar cal = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
 					cal.getTime();
 					Log.i("Timer2 Hora", cal.getTime().toGMTString());
 					
-				}
+				//}
 			}
-	     //este timer comenzará a funcionar cuando pase 3 segundos
-		}, 5000, UPDATE_INTERVAL2);
+	     //este timer comenzará a funcionar cuando pase 1horas segundos
+		}, UPDATE_INTERVAL2, UPDATE_INTERVAL2);
+
 			
 			//}, 0, 300*1000);
 
@@ -287,12 +288,12 @@ public class MiServicioPreguntas extends Service {
 	    		
 	    		
 	    		//para mostrar nombre app en la pantalla
-	    		//nPreguntasEnviadasAmigospantalla = prefs.getInt("nPreguntasEnviadasAmigos", 0);	
-	    		//contadorPreguntasExtraAldiapantalla = prefs.getInt("contadorPreguntasExtraAldia", 0);	
+	    		/*nPreguntasEnviadasAmigospantalla = prefs.getInt("nPreguntasEnviadasAmigos", 0);	
+	    		contadorPreguntasExtraAldiapantalla = prefs.getInt("contadorPreguntasExtraAldia", 0);	
 	    		
 	    		
 	    		
-	    		/*mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+"a amigos "+Integer.toString(nPreguntasEnviadasAmigospantalla)+"extras "+Integer.toString(contadorPreguntasExtraAldiapantalla);
+	    		mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+"a amigos "+Integer.toString(nPreguntasEnviadasAmigospantalla)+"extras "+Integer.toString(contadorPreguntasExtraAldiapantalla);
 	    		handler.post(toast);*/
 	    		
 	    		
