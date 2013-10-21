@@ -60,11 +60,6 @@ public class Ranking extends ListActivity{
 	private static final String TAG_FIELDS = "fields";
 	private static final String TAG_FIELDS_PUNTOS = "puntos";
 	private static final String TAG_FIELDS_USUARIO = "usuario";
-
-	//servicio
-	/*private MiServicioPreguntas s;
-	private ArrayList<String> values;
-	private ArrayAdapter<String> adapter;*/
 	private JSONParserPOST jParser;
     static InputStream is = null;
 	private ArrayList<HashMap<String, String>> puntosList;
@@ -92,36 +87,11 @@ public class Ranking extends ListActivity{
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.ranking);
-	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+	 	    
 	        mContext = this;
 
-	        //Llamamos al servicio
-				        
-	        /*Intent intent = new Intent(this, MiServicioPreguntas.class);
-	        PendingIntent pintent = PendingIntent.getService(this, 0, intent, 0);
-
-	        AlarmManager alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-			Calendar cal1 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
-
-			// Start every 60 seconds
-	        alarm.setRepeating(AlarmManager.RTC_WAKEUP, cal1.getTimeInMillis(), 5*1000, pintent); */
-	        
-	        
-	        //Llamamos al servicio
-	        /*
-	        Intent intent2 = new Intent(this, MiServicioPreguntas.class);
-	        PendingIntent pintent2 = PendingIntent.getService(this, 0, intent2, 0);
-
-	        AlarmManager alarm2 = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-			Calendar cal2 = new GregorianCalendar(TimeZone.getTimeZone("GMT")); 
-
-			// Start every 60 seconds
-	        alarm2.setRepeating(AlarmManager.RTC_WAKEUP, cal2.getTimeInMillis(), 30*1000, pintent2); */
-	 
 	        startService(new Intent(getApplicationContext(), MiServicioPreguntas.class));
 	  
-	        
 	        // Hashmap for ListView
 	        puntosList = new ArrayList<HashMap<String, String>>();
 	 
@@ -146,10 +116,6 @@ public class Ranking extends ListActivity{
 	          protected ArrayList<HashMap<String, String>> doInBackground(String... urls) {
 
 			        try {
-			        	
-	        	
-			        	
-			        	
 
                  	    String csrf = null;
 				        	HttpParams params = new BasicHttpParams();
@@ -166,10 +132,8 @@ public class Ranking extends ListActivity{
            			    	//para imprimir por pantalla
            			    	HttpEntity resEntityGet2 = response.getEntity();
            			    	String resultado2 = EntityUtils.toString(resEntityGet2);
-           			    	System.out.println("*A*A*A"+ resultado2);
            			    	
-           			    	//Log.e("*A*A*A", "Error" + resultado2);
-           			    	//borrar
+
            			    	
         			        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
 
@@ -177,21 +141,16 @@ public class Ranking extends ListActivity{
            			    	for (int i = 0; i < headers.length; i++){	
        			    			
            			    		if (headers[i].toString().contains("csrftoken")){
-           			    			System.out.println("cabeceraaaa:"+headers[i].toString());
+
            			    			csrf=headers[i].toString();
            			    			csrf = csrf.replace("Set-Cookie:","");
            			    			csrf = csrf.replace(" ","");
            			    			csrf = csrf.replace(";expires","");
-           			    			System.out.println("*C*C*C*C*C*C el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
-           			    			
-     
-           			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
                         			//obtengo el nombre de la asignatura
            			    	        prefs = PreferenceManager.getDefaultSharedPreferences(Ranking.this);
            			    	        asignatura = prefs.getString("subject", "n/a");
 
-           			    			
                         			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
                    			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
@@ -199,27 +158,13 @@ public class Ranking extends ListActivity{
            			    	} 
 	               			    	
         					HttpPost httppost = new HttpPost(url);
-           			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-
         			        
         			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
         			        
         			        response = httpclient.execute(httppost);
         			        HttpEntity resEntityGet = response.getEntity();
         			        is = resEntityGet.getContent();
-        			        //System.out.println("*****R*R*R*R* is es:"+is.toString());
-        			        
-
-           			    	//para imprimir por pantalla si hay error
-           			    	//HttpEntity resEntityGet3 = response.getEntity();
-           			    	//String resultado3 = EntityUtils.toString(resEntityGet);
-           			    	//System.out.println("*A*A*A"+ resultado3);
-           			    	//Log.e("*A*A*A", "Error" + resultado2);
-           			    	//borrareste trozo
-
-        			        
-        			        
-                			
+        			
 							try{	
 							    JSONObject json = jParser.getJSONFromResponse(is);
 							    // Getting Array of Contacts
@@ -270,9 +215,6 @@ public class Ranking extends ListActivity{
 					    pd.dismiss();
 					    
 						return puntosList;
-	    			
-	
-	
 
 	          }
 	     
@@ -297,9 +239,7 @@ public class Ranking extends ListActivity{
           }
 	     }
 	     
-	     
-	     
-	     
+
 		 public void addListenerOnButton() {
 			 
 				btnDisplay = (Button) findViewById(R.id.pregunta_amistosa);
@@ -320,7 +260,6 @@ public class Ranking extends ListActivity{
             //Starting new intent
             Intent in = new Intent(getApplicationContext(), ListadoCompaneros.class);
             startActivity(in);
-            //finish();
 			
 		}
 	     
@@ -337,11 +276,6 @@ public class Ranking extends ListActivity{
    
 	/*
 	 * 
-	 *    
-	 *    
-	 *    
-	 *    
-	 *    
 	 *    
 	 *    SERVICIO
 	 */
@@ -369,12 +303,3 @@ public class Ranking extends ListActivity{
 		};
 		
 }
-		
-		/*public void showServiceData(View view) {
-			if (s != null) {
-				List<String> wordList = s.getWordList();
-				values.clear();
-				values.addAll(wordList);
-				adapter.notifyDataSetChanged();
-			}
-		}*/

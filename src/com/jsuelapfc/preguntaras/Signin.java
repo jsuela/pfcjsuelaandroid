@@ -173,27 +173,11 @@ public class Signin extends Activity{
                    			    		if (headers[i].toString().contains("csrftoken")){
                    			    			System.out.println("entras aqui?2");
 
-                   			    			//Para la version de desarrollo,no para la de apache
-                   			    			/*csrf = headers[i].toString().split(" ")[2];
-                   			    			System.out.println("el csrf0000 es:"+ csrf);
-                   			    			csrf = csrf.replace(";","");
-
-                  			    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);*/
-                   			    			
-                   			    			//para version apache
-                   			    			/*csrf = headers[i].toString().split(" ")[1];
-                   			    			csrf = csrf.replace(";","");
-                   			    			System.out.println("el csrf111111 es:"+ headers[i].toString());
-                   			    			System.out.println("el csrf111111 es:"+ csrf.split("=")[1]);*/
                    			    			csrf=headers[i].toString();
                    			    			csrf = csrf.replace("Set-Cookie:","");
                    			    			csrf = csrf.replace(" ","");
                    			    			csrf = csrf.replace(";expires","");
-                   			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
-
-                   			    			
-		     
-                   			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
+    
 		                        			nameValuePairs.add(new BasicNameValuePair("user", loginusuario));
 		                        			nameValuePairs.add(new BasicNameValuePair("password", loginpassword));
 		                        			nameValuePairs.add(new BasicNameValuePair("password2", loginpassword2));
@@ -206,13 +190,12 @@ public class Signin extends Activity{
                    			    	} 
 	    	               			    	
                 					HttpPost httppost = new HttpPost("http://pfc-jsuelaplaza.libresoft.es/android/signin");
-                   			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+                   			    	
 
                 			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 			        
                 			        response = httpclient.execute(httppost);
-                			        
-                        			//pd.dismiss();
+
                         			
                         			if (response.getStatusLine().getStatusCode() == 500)
                             	    	mensaje = "El usuario ya existe";
@@ -229,13 +212,7 @@ public class Signin extends Activity{
                         						"Inténtelo más tarde";
                         			 
                         			handler.post(toast);
-                        			
-                			    /*} catch (ClientProtocolException e) {
 
-                			    } catch (IOException e) {*/
-
-
-  
                      		
             		        } catch (Exception e) {
             		        	mensaje = "No se puede contactar con el servidor";
@@ -247,33 +224,19 @@ public class Signin extends Activity{
                 			    pd.dismiss();
                     		}
                  		}).start();	
-		            	
-		            	
-		            	
-		            	
+
 		            	
 		            }
 
-	            	
-	            	
-	            	
 	            	
 	            }
 	            
 	            
 	      });
-	      
-	      
-	      
-	      
-        
-	    
-	      
-	      
+
 	      
 	   }    
 	      
-
 
 	     private class MiTarea extends AsyncTask<String, ListAdapter, ArrayList<String> >{
 
@@ -287,7 +250,6 @@ public class Signin extends Activity{
 			 
 			            // looping through all schools
 			            
-
 		                schoolNames.add("Elige colegio"); 
 			            
 			            for(int i = 0; i < colegios.length(); i++){
@@ -315,8 +277,6 @@ public class Signin extends Activity{
 						finish();
 
 			        }	
-
-	         
 
 					return schoolNames;
 

@@ -45,25 +45,14 @@ public class Subjects extends ListActivity {
 	
 	// JSON Node names2
 	private static final String TAG_ASIGNATURAS = "asignaturas";
-	//private static final String TAG_PK = "pk";
-	//private static final String TAG_MODEL = "model";
-
-	//private static final String TAG_FIELDS = "fields";
-	//private static final String TAG_FIELDS_ASIGNATURA = "asignatura";
-
-	
 
 	private JSONParser jParser;
 
-
 	private ArrayList<HashMap<String, String>> asignaturasalumnoList;
-
 
 	// contacts JSONArray
 	private JSONArray asignaturasalumno = null;
 
-
-	
 	private ProgressDialog pd;
 	
 	private String mensaje;
@@ -82,14 +71,9 @@ public class Subjects extends ListActivity {
     private TextView tv;
 
 
-    
 	private String loginusuario;
     private SharedPreferences prefs;
     private String resultado;
-    
-	/*private int nPreguntasEnviadasAmigos;
-	private Editor edit;
-	private int limitePreguntasEnviadasAmigos = 10;*/
 
 
 	@Override
@@ -111,8 +95,6 @@ public class Subjects extends ListActivity {
         // Creating JSON Parser instance
         jParser = new JSONParser();
 
-
- 
         
         prefs = PreferenceManager.getDefaultSharedPreferences(Subjects.this);
         loginusuario = prefs.getString("username", "n/a");
@@ -172,30 +154,17 @@ public class Subjects extends ListActivity {
         }
 
     protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
-	        //Damos nombre al botón
-	        //el siguiente método se ejecutará cuando se presione el botón
-    		//irA = (Button) findViewById(R.id.irA);
-  	        //irA.setText("Cargar datos asignatura");
-	        //addListenerOnButton();
 	        
     		irMatricula = (Button) findViewById(R.id.matricularse);
     		irMatricula.setText("Quiero matricularme en asignaturas");
 	        addListenerOnButton2();
-	        
-	        
-	        
-	        /*lv.setAdapter(new ArrayAdapter<String>(this,android.R.layout.simple_list_item_single_choice,s));
-	        lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);   */
-	        
 	        
     	
 	        adapter2 = new SimpleAdapter(Subjects.this, asignaturasalumnoList,
     		  android.R.layout.simple_list_item_1,
       		new String[] { TAG_FIELDS_ASIGNATURA}, new int[] {
     		  android.R.id.text1});
-	        
-      
-      
+
       
 	        lv.setAdapter(adapter2);
 	        lv.setOnItemClickListener(new OnItemClickListener() {
@@ -220,22 +189,7 @@ public class Subjects extends ListActivity {
     }
     }
     
-	 /*public void addListenerOnButton() {
-		 
-			btnDisplayirA = (Button) findViewById(R.id.irA);
-		 
-			btnDisplayirA.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					//do osomething
-				}
-		 
-
-
-	         	});
-		 
-			};*/
 			
 		 public void addListenerOnButton2() {
 			 
@@ -267,7 +221,6 @@ public class Subjects extends ListActivity {
  	
  	@Override
  	public void onBackPressed() {
- 		System.out.println("pulso back********");
  		finish();
         Intent in = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(in);

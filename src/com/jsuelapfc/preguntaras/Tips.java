@@ -71,8 +71,6 @@ public class Tips extends ListActivity{
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	        //para que no gire a modo landscape
-	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 	        setContentView(R.layout.list_tips);
 
@@ -122,11 +120,7 @@ public class Tips extends ListActivity{
        			    			csrf = csrf.replace("Set-Cookie:","");
        			    			csrf = csrf.replace(" ","");
        			    			csrf = csrf.replace(";expires","");
-       			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
-       			    			
- 
-       			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
                     			//obtengo el nombre de la asignatura y del usuario
        			    	        prefs = PreferenceManager.getDefaultSharedPreferences(Tips.this);
        			    	        asignatura = prefs.getString("subject", "n/a");
@@ -141,7 +135,7 @@ public class Tips extends ListActivity{
        			    	} 
 			        	
     					HttpPost httppost = new HttpPost(url);
-       			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
+       			    
 
     			        
     			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
@@ -149,12 +143,7 @@ public class Tips extends ListActivity{
     			        response = httpclient.execute(httppost);
     			        HttpEntity resEntityGet = response.getEntity();
     			        is = resEntityGet.getContent();
-			        	
-			        	
-			        	
-			        	
 
-			        	
 				        JSONObject json = jParser.getJSONFromResponse(is);
 			            // Getting Array of Contacts
 			            tips = json.getJSONArray(TAG_TIPS);
@@ -170,8 +159,7 @@ public class Tips extends ListActivity{
 			                // Respuestas is agin JSON Object
 			                JSONObject fields = c.getJSONObject(TAG_FIELDS);
 			                String leccion = fields.getString(TAG_FIELDS_LECCION);  
-		 	    
-			  	                
+
 			                
 			                // creating new HashMap
 			                HashMap<String, String> map = new HashMap<String, String>();

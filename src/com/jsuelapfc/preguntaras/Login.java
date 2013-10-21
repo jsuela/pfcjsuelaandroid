@@ -46,31 +46,18 @@ public class Login extends Activity {
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
  	    
 		super.onCreate(savedInstanceState);
-        //setContentView(R.layout.main);
-		
-		
 
-
-		//Para login descomentar desde aqui hasta.....y poner activity en vez de Tabactivity
         setContentView(R.layout.login);
- 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
         mContext = this;
         
         Button button = (Button) findViewById(R.id.entrar);
         button.setText("Entrar");
         Button button2 = (Button) findViewById(R.id.quierounacuenta);
         button2.setText("¿Quieres una cuenta?");
-        
-        
-        
-        
-        
+       
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		loginusuario = prefs.getString("username", "n/a");
-		
-		
+
 		//Comprobamos si ya ha habido login, y si es así saltamos a la pantalla principal
 		if (!loginusuario.equals("n/a")){
 			//miramos si ya ha escogido alguna asignatura, sino le obligamos a que escoja
@@ -89,14 +76,7 @@ public class Login extends Activity {
 				finish();
 			}
 		}
-		
-    	/*button2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-              	Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://pfc-jsuelaplaza.libresoft.es/signin"));
-            	startActivity(i);
-            	
-            }
-        });*/
+
 		button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 	     		Intent in = new Intent(getApplicationContext(), Signin.class);
@@ -145,27 +125,11 @@ public class Login extends Activity {
                    			    		if (headers[i].toString().contains("csrftoken")){
                    			    			System.out.println("entras aqui?2");
 
-                   			    			//Para la version de desarrollo,no para la de apache
-                   			    			/*csrf = headers[i].toString().split(" ")[2];
-                   			    			System.out.println("el csrf0000 es:"+ csrf);
-                   			    			csrf = csrf.replace(";","");
-
-                  			    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);*/
-                   			    			
-                   			    			//para version apache
-                   			    			/*csrf = headers[i].toString().split(" ")[1];
-                   			    			csrf = csrf.replace(";","");
-                   			    			System.out.println("el csrf111111 es:"+ headers[i].toString());
-                   			    			System.out.println("el csrf111111 es:"+ csrf.split("=")[1]);*/
                    			    			csrf=headers[i].toString();
                    			    			csrf = csrf.replace("Set-Cookie:","");
                    			    			csrf = csrf.replace(" ","");
                    			    			csrf = csrf.replace(";expires","");
-                   			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
-                   			    			
-		     
-                   			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
 		                        			nameValuePairs.add(new BasicNameValuePair("user", loginusuario));
 		                        			nameValuePairs.add(new BasicNameValuePair("password", loginpassword));
 		                        			nameValuePairs.add(new BasicNameValuePair("type", "1"));
@@ -176,13 +140,12 @@ public class Login extends Activity {
                    			    	} 
 	    	               			    	
                 					HttpPost httppost = new HttpPost("http://pfc-jsuelaplaza.libresoft.es/android/login");
-                   			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-
+                   			    
                 			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
                 			        
                 			        response = httpclient.execute(httppost);
                 			        
-                        			//pd.dismiss();
+             
                         			
                         			if (response.getStatusLine().getStatusCode() == 500)
                             	    	mensaje = "Usuario o contraseña incorrecto";
@@ -204,13 +167,7 @@ public class Login extends Activity {
                         						"Inténtelo más tarde";
                         			 
                         			handler.post(toast);
-                        			
-                			    /*} catch (ClientProtocolException e) {
-
-                			    } catch (IOException e) {*/
-
-
-  
+ 
                      		
             		        } catch (Exception e) {
             		        	mensaje = "No se puede contactar con el servidor";
@@ -228,11 +185,7 @@ public class Login extends Activity {
                 			Intent in = new Intent(getApplicationContext(), MainActivity.class);
                 			startActivity(in);
                 		}
-                        /*utilizamos finish para que al lanzar una nueva activity el usuario
-                        no pueda volver hacia atrás*/
-    					//finish();
-    					
-    			
+
          
              }
             

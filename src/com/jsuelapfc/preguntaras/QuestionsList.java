@@ -95,9 +95,7 @@ public class QuestionsList extends ListActivity{
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
 	        setContentView(R.layout.questionslist);
-	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
-
+	 	    
 	        mContext = this;
 
 	        // Hashmap for ListView
@@ -144,9 +142,6 @@ public class QuestionsList extends ListActivity{
      			    			csrf = csrf.replace(";expires","");
      			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
-     			    			
-
-     			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
      			    			//obtengo el nombre de la asignatura
      			    			prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
      			    			asignatura = prefs.getString("subject", "n/a");
@@ -158,7 +153,6 @@ public class QuestionsList extends ListActivity{
      			    	} 
              			    	
   					HttpPost httppost = new HttpPost(url);
-     			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
   			        
   			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
@@ -227,9 +221,6 @@ public class QuestionsList extends ListActivity{
 				    
 					return preguntasList;
 
-	        
-	        
-	        
 	          }
 	        protected void onPostExecute(ArrayList<HashMap<String, String>> result ) {
 
@@ -342,11 +333,7 @@ public class QuestionsList extends ListActivity{
 			     			    			csrf = csrf.replace("Set-Cookie:","");
 			     			    			csrf = csrf.replace(" ","");
 			     			    			csrf = csrf.replace(";expires","");
-			     			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
-	
-			     			    			
-	
-			     			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
+			     			    		
 			     			    			//obtengo el nombre de la asignatura
 			     			    			prefs = PreferenceManager.getDefaultSharedPreferences(QuestionsList.this);
 			     			    			asignatura = prefs.getString("subject", "n/a");
@@ -358,8 +345,6 @@ public class QuestionsList extends ListActivity{
 			     			    	} 
 			             			    	
 			  					HttpPost httppost = new HttpPost(url);
-			     			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-	
 			  			        
 			  			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 			  			        
@@ -380,14 +365,9 @@ public class QuestionsList extends ListActivity{
 								        //getting notification
 										finish();
 										Intent in = new Intent(getApplicationContext(), MainActivity.class);
-			        				    /*Bundle b = new Bundle();
-			        					b.putCharSequence("notify", "1");
-			        					in.putExtras(b);*/
+
 										in.putExtra("notify", "1");
 			        					startActivity(in);
-			        					
-
-			        					
 			        					
 			        		        	mensaje = "Pregunta añadida";
 			        		            handler.post(toast);

@@ -13,8 +13,6 @@ public class Steps extends Activity{
 	 	    requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 	        setContentView(R.layout.steps);
-	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
 
 	   }
 }

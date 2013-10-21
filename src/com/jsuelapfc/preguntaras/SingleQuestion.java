@@ -36,8 +36,6 @@ public class SingleQuestion extends Activity {
 	
     private TextView lblName;
     private TextView lblName2;
-    /*private Button lblEnvResp;
-    private RadioButton lblResp,lblResp2, lblResp3;*/
     
     private RadioGroup radioGroupRespuestas;
     private RadioButton radioGroupButton;
@@ -62,7 +60,6 @@ public class SingleQuestion extends Activity {
     	//Eliminamos la linea del titulo de la app
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
- 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setContentView(R.layout.single_list_pregunta_item);
         
@@ -115,11 +112,6 @@ public class SingleQuestion extends Activity {
 					int selectedId = radioGroupRespuestas.getCheckedRadioButtonId();
 					// find the radiobutton by returned id
 					radioGroupButton = (RadioButton) findViewById(selectedId);
-					 
-					/*Toast.makeText(SingleQuestion.this,"Respuesta elegida: "+
-						radioGroupButton.getText(), Toast.LENGTH_SHORT).show();*/
-					
-		
 
             		new Thread(new Runnable(){
             			@Override
@@ -145,27 +137,11 @@ public class SingleQuestion extends Activity {
            			    			System.out.println("cabecera:"+headers[i].toString());
                			    		if (headers[i].toString().contains("csrftoken")){
                			    			
-               			    			/*System.out.println("entras aqui?");
-               			    			/*csrf = headers[i].toString().split(":")[2];
-               			    			csrf = csrf.replace("}","");
-               			    			csrf = headers[i].toString().split(" ")[2];
-               			    			System.out.println("el csrf0000 es:"+ csrf);
-               			    			csrf = csrf.replace(";","");
 
-              			    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);*/
-               			    			
-               			    			//para version apache
-               			    			
-               			    			/*csrf = headers[i].toString().split(" ")[1];
-               			    			csrf = csrf.replace(";","");
-               			    			System.out.println("el csrf111111 es:"+ headers[i].toString());
-               			    			System.out.println("el csrf111111 es:"+ csrf.split("=")[1]);*/
                			    			csrf=headers[i].toString();
                			    			csrf = csrf.replace("Set-Cookie:","");
                			    			csrf = csrf.replace(" ","");
                			    			csrf = csrf.replace(";expires","");
-
-
 
                        			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
@@ -185,10 +161,7 @@ public class SingleQuestion extends Activity {
        			    	        asignatura = prefs.getString("subject", "n/a");
        			    			
                     			nameValuePairs.add(new BasicNameValuePair("asignatura", asignatura));
-                    			
 
-              			    	  
-               			    	
                			    	
             			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
             	
@@ -213,9 +186,7 @@ public class SingleQuestion extends Activity {
                     				}
                     				
                 					Intent in = new Intent(getApplicationContext(), MainActivity.class);
-		        				    /*Bundle b = new Bundle();
-		        					b.putCharSequence("notify", "2");
-		        					in.putExtras(b);*/
+
                 					in.putExtra("notify", "2");
                 					startActivity(in);
                 					finish();                					
@@ -240,17 +211,13 @@ public class SingleQuestion extends Activity {
                  		}
   
              		}).start();		
-					
-                    /*utilizamos finish para que al lanzar una nueva activity el usuario
-                    no pueda volver hacia atrás*/
-					//finish();
+
 
 					}catch( NullPointerException e){
 						Toast.makeText(SingleQuestion.this,"Debes elegir una respuesta ", Toast.LENGTH_SHORT).show();
 					}catch( Exception e){
 						Toast.makeText(SingleQuestion.this,"Error ", Toast.LENGTH_SHORT).show();
 					}
-					//aquí añadir un catch para prblemas de red
 					 
 				}
 				

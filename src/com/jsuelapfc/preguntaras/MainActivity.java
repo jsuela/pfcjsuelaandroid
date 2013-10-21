@@ -30,14 +30,10 @@ public class MainActivity extends TabActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
- 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setContentView(R.layout.main);
-        
-        
-        
-
-
-        //GCM check device y checkmanifest se puede borrar antes de publicar
+ 
+        //GCM check device y checkmanifest
         GCMRegistrar.checkDevice(this);
         GCMRegistrar.checkManifest(this);
         
@@ -48,30 +44,9 @@ public class MainActivity extends TabActivity {
             GCMRegistrar.register(MainActivity.this, SENDER_ID); //Sender ID
         } else {
             Log.v("main activity", "Ya registrado");
-            //Toast.makeText(MainActivity.this,"ya registradooo ", Toast.LENGTH_SHORT).show();
         }
         
-        
-        
-
-        
-
- 	    //Quitamos la barra de android donde muestra la cobertura, batería, etc..          
- 	    //getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        //setContentView(R.layout.main);
-		
-		//comprobamos las notificaciones
-        //si hay entonces miraremos cual pesgtaña es la que se abre
-
-        /*CharSequence notify = "";
-        //hay q utilizar extras para abrir ciertas pestañas
-        if (getIntent().getExtras() != null) {
-            Bundle b = getIntent().getExtras();
-            notify = b.getCharSequence("notify");
-        }
-        */
-        // obtenemos intent data para ver si hay q abrir alguna pestaña en particular
-        //o para cambiar de asignatura
+ 
         Intent in = getIntent();
         
     	String TAG_FIELDS_ASIGNATURA = "asignatura";
@@ -86,12 +61,7 @@ public class MainActivity extends TabActivity {
 			edit.commit();
         	
         }
-        	
-        
-        
-
-        
-
+ 
     	String TAG_FIELDS_NOTIFY = "notify";
         String notify = in.getStringExtra(TAG_FIELDS_NOTIFY);
 
@@ -128,15 +98,6 @@ public class MainActivity extends TabActivity {
 	            this.getResources().getDrawable(R.drawable.ic_action_example))
 	            .setContent(new Intent(this, Refresh.class)));
 
-
-		/*tabHost.addTab(tabHost.newTabSpec("PreferencesDemo")
-	            .setIndicator("Consumidor", 
-	            this.getResources().getDrawable(R.drawable.settings))
-	            .setContent(new Intent(this, Consumer.class)));	*/
-		//tabHost.computeScroll();	
-		//para que se situe en el primero, es decir, en ranking
-       // int pos = getIntent().getIntExtra("POSICION", 0); 
-        //tabHost.setCurrentTab(pos);
 		if (notify==null){
             tabHost.setCurrentTab(0);
 		}else if(notify.equals("4")){
@@ -186,44 +147,6 @@ public class MainActivity extends TabActivity {
         
         
     }
-    
- // Añadiendo las opciones de menú
-   /* @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_main, menu);
-        return true;
-    }
-    
- // Añadiendo funcionalidad a las opciones de menú
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-       switch (item.getItemId()) {
-            case R.id.btLogout:
-            	//eliminamos de Shared preferences el usuario
-            	
-        		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-            	SharedPreferences.Editor editor = prefs.edit();
-            	editor.putString("username", "n/a");
-            	editor.putString("subject", "n/a");
-            	editor.commit();
-            	
-                //Si estamos registrados --> Nos des-registramos en GCM
-                final String regId = GCMRegistrar.getRegistrationId(MainActivity.this);
-                if (!regId.equals("")) {
-                    GCMRegistrar.unregister(MainActivity.this);
-                } else {
-                    Log.v("Main Activity", "Ya desregistrado");
-                }
-            
-               Toast.makeText(getApplicationContext(), "Cerrando sesión", 
-                     Toast.LENGTH_SHORT).show();
-               finish();
-               return true;
-            default:
-               return super.onOptionsItemSelected(item);
-        }
-    }*/
     
 }
 

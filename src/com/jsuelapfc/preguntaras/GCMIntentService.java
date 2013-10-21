@@ -56,14 +56,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 	private String mensaje;
 	private final Handler handler = new Handler();
 
-    
-    
-
     public GCMIntentService() {
         super(SENDER_ID);
     }
-    
-
     
     protected void onRegistered(Context context, String registrationId) {
     	Toast.makeText(this,"android/gcm/registro onregistered ", Toast.LENGTH_SHORT).show();
@@ -73,7 +68,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 		loginusuario = prefs.getString("username", "n/a");
           
         registroServidor(loginusuario, registrationId);
-        //        ServerUtilities.register(context, registrationId);
     }
     
     
@@ -94,26 +88,13 @@ public class GCMIntentService extends GCMBaseIntentService {
 		    	
 		    	for (int i = 0; i < headers.length; i++){
 		    		if (headers[i].toString().contains("csrftoken")){
-		    			System.out.println("entras aqui?");
-		    			/*csrf = headers[i].toString().split(":")[2];
-		    			csrf = csrf.replace("}","");*/
-		    			/*csrf = headers[i].toString().split(" ")[2];
-		    			System.out.println("el csrf0000 es:"+ csrf);
-		    			csrf = csrf.replace(";","");
-
-		    			System.out.println("el csrf1 es:"+ csrf.split("=")[1]);*/
-		    			
-		    			//para version apache
-		    			/*csrf = headers[i].toString().split(" ")[1];
-		    			csrf = csrf.replace(";","");*/
 		    			csrf=headers[i].toString();
 		    			csrf = csrf.replace("Set-Cookie:","");
 		    			csrf = csrf.replace(" ","");
-		    			csrf = csrf.replace(";expires","");
-		    			
+		    			csrf = csrf.replace(";expires","");		    			
 
-         			nameValuePairs.add(new BasicNameValuePair("user", usuario));
-         			nameValuePairs.add(new BasicNameValuePair("codigoGCM", regId));
+	         			nameValuePairs.add(new BasicNameValuePair("user", usuario));
+	         			nameValuePairs.add(new BasicNameValuePair("codigoGCM", regId));
 
     			    	nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
@@ -121,13 +102,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		    	} 
     			    	
 				HttpPost httppost = new HttpPost("http://pfc-jsuelaplaza.libresoft.es/android/gcm/registro");
-		    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
 
 		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 		        
 		        response = httpclient.execute(httppost);
-		        
-
  			
  			if (response.getStatusLine().getStatusCode() == 500)
      	    	mensaje = "GCM No ok";
@@ -137,23 +115,14 @@ public class GCMIntentService extends GCMBaseIntentService {
  
  			}else
  				mensaje = "GCM NO OK";
- 			 
- 			//muestra mensjaes GCM handler.post(toast);
- 			
-		    /*} catch (ClientProtocolException e) {
-
-		    } catch (IOException e) {*/
-
-
-
+ 			 	
+		    } catch (Exception e) {
+		     	mensaje = "No se puede contactar con el servidor";
+		         e.printStackTrace();
+		         handler.post(toast);
+		     
 		
-     } catch (Exception e) {
-     	mensaje = "No se puede contactar con el servidor";
-         e.printStackTrace();
-         handler.post(toast);
-     
-
-	    }
+			}
 
 		
 	}
@@ -176,27 +145,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	    Log.d("GCMTest", "REGISTRATION: Error -> " + errorId);
 	}
 
-   /* @Override
-    protected void onUnregistered(Context context, String registrationId) {
-        Log.i(TAG, "Device unregistered");
-        displayMessage(context, getString(R.string.gcm_unregistered));
-        if (GCMRegistrar.isRegisteredOnServer(context)) {
-            ServerUtilities.unregister(context, registrationId);
-        } else {
-            // This callback results from the call to unregister made on
-            // ServerUtilities when the registration to the server failed.
-            Log.i(TAG, "Ignoring unregister callback");
-        }
-    }*/
-
-    /*@Override
-    protected void onMessage(Context context, Intent intent) {
-        Log.i(TAG, "Received message");
-        String message = getString(R.string.gcm_message);
-        displayMessage(context, message);
-        // notifies user
-        generateNotification(context, message);
-    }*/
 	@Override
 	protected void onMessage(Context context, Intent intent) {
 		//extraemos el parámetro data.
@@ -205,14 +153,6 @@ public class GCMIntentService extends GCMBaseIntentService {
 	    mostrarNotificacion(context, msg);
 	}
 
-    /*@Override
-    protected void onDeletedMessages(Context context, int total) {
-        Log.i(TAG, "Received deleted messages notification");
-        String message = getString(R.string.gcm_deleted, total);
-        displayMessage(context, message);
-        // notifies user
-        generateNotification(context, message);
-    }*/
     
     private void mostrarNotificacion(Context context, String msg)
     {
@@ -245,14 +185,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         	descripcion= msg.split("=")[1];
         	//notificacion de pregunta
         	notIntent.putExtra("asignatura", msgAsignatura);
-		    /*b.putCharSequence("notify", "4");
-		    notIntent.putExtras(b);*/
         	notIntent.putExtra("notify", "4");
         }else{
-        	//notificacion de leccion
-		    /*b.putCharSequence("notify", "5");
-		    notIntent.putExtras(b);*/
-        	//String asig = msg.split(" ")[0];
         	String msgAsignatura2 = msg.split("=")[0];
         	descripcion= msg.split("=")[1];
         	notIntent.putExtra("asignatura", msgAsignatura2);
@@ -272,53 +206,6 @@ public class GCMIntentService extends GCMBaseIntentService {
      
         //Enviar notificación
         notManager.notify(4, notif);
-        
-        
-        
-        
-        
-
-        
-        
-        
-        
-        
+       
     }
-
-    /*@Override
-    public void onError(Context context, String errorId) {
-        Log.i(TAG, "Received error: " + errorId);
-        displayMessage(context, getString(R.string.gcm_error, errorId));
-    }*/
-
-   /* @Override
-    protected boolean onRecoverableError(Context context, String errorId) {
-        // log message
-        Log.i(TAG, "Received recoverable error: " + errorId);
-        displayMessage(context, getString(R.string.gcm_recoverable_error,
-                errorId));
-        return super.onRecoverableError(context, errorId);
-    }*/
-
-    /**
-     * Issues a notification to inform the user that server has sent a message.
-     */
-   /* private static void generateNotification(Context context, String message) {
-        int icon = R.drawable.ic_stat_gcm;
-        long when = System.currentTimeMillis();
-        NotificationManager notificationManager = (NotificationManager)
-                context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(icon, message, when);
-        String title = context.getString(R.string.app_name);
-        Intent notificationIntent = new Intent(context, DemoActivity.class);
-        // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent intent =
-                PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(context, title, message, intent);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(0, notification);
-    }*/
-
 }

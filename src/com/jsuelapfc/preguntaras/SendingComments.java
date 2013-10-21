@@ -57,7 +57,6 @@ public class SendingComments extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
  	    requestWindowFeature(Window.FEATURE_NO_TITLE);
- 	    //para que no rote setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.send_comment);
         mContext = this;
         
@@ -131,12 +130,7 @@ public class SendingComments extends Activity{
 	     			    			csrf = csrf.replace("Set-Cookie:","");
 	     			    			csrf = csrf.replace(" ","");
 	     			    			csrf = csrf.replace(";expires","");
-	     			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
-	     			    			
-
-	     			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
-	     			    			//obtengo el nombre de la asignatura
 	     			    			prefs = PreferenceManager.getDefaultSharedPreferences(SendingComments.this);
 	     			    			asignatura = prefs.getString("subject", "n/a");
 	     			    			
@@ -150,8 +144,6 @@ public class SendingComments extends Activity{
 	     			    	} 
 	             			    	
 	  					HttpPost httppost = new HttpPost(url);
-	     			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-
 	  			        
 	  			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 	  			        
@@ -165,9 +157,7 @@ public class SendingComments extends Activity{
 						        //getting notification
 								finish();
 								Intent in = new Intent(getApplicationContext(), MainActivity.class);
-	        				    /*Bundle b = new Bundle();
-	        					b.putCharSequence("notify", "1");
-	        					in.putExtras(b);*/
+
 	        					startActivity(in);
 	        					
 	        					

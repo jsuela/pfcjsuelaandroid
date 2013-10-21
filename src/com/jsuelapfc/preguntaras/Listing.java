@@ -69,8 +69,7 @@ public class Listing extends ListActivity{
 	   @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
-	 	    //setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-
+	 	 
 	        setContentView(R.layout.questions);
 	        
 	        mContext = this;
@@ -116,12 +115,7 @@ public class Listing extends ListActivity{
  			    			csrf = csrf.replace("Set-Cookie:","");
  			    			csrf = csrf.replace(" ","");
  			    			csrf = csrf.replace(";expires","");
- 			    			System.out.println("el csrf111111nuevo es:"+ csrf.split("=")[1]);
 
- 			    			
-
- 			    			//System.out.println("CSSSSRF:"+ csrf.split("=")[1]);
- 			    			//obtengo el nombre de la asignatura
  			    			prefs = PreferenceManager.getDefaultSharedPreferences(Listing.this);
  			    			asignatura = prefs.getString("subject", "n/a");
  			    			
@@ -131,8 +125,6 @@ public class Listing extends ListActivity{
  			    		}
  			    	} 	        		  
   					HttpPost httppost = new HttpPost(url);
- 			    	//nameValuePairs.add(new BasicNameValuePair("csrfmiddlewaretoken", csrf.split("=")[1]));
-
 			        
 			        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs,"UTF-8"));
 			        
@@ -160,9 +152,7 @@ public class Listing extends ListActivity{
 			                String respuesta = fields.getString(TAG_FIELDS_RESPUESTA);	    	    
 			    	        String respuesta_dada = fields.getString(TAG_FIELDS_RESPUESTA_DADA);
 			                String respuesta_usuario_correcta = fields.getString(TAG_FIELDS_RESPUESTA_USUARIO_CORRECTA);  
-		
-			                
-			                
+
 			                // creating new HashMap
 			                HashMap<String, Object> map = new HashMap<String, Object>();
 			 

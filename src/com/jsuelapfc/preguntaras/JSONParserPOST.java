@@ -29,12 +29,10 @@ public class JSONParserPOST {
             String line = null;
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "n");
-                //System.out.println(line);
             }
             is.close();
             json = sb.toString();
-            
-	        
+     
 
         } catch (Exception e) {
             Log.e("Buffer Error", "Error converting result " + e.toString());
@@ -43,7 +41,7 @@ public class JSONParserPOST {
  
         // try parse the string to a JSON object
         try {
-            System.out.println(json);
+
             jObj = new JSONObject(json);
 
             
@@ -53,7 +51,7 @@ public class JSONParserPOST {
         }
  
         // return JSON String
-        System.out.println("*J*J*J*J*J*J json es:"+jObj);
+
         return jObj;
  
     }

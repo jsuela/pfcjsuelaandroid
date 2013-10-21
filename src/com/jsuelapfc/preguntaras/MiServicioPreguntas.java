@@ -58,9 +58,7 @@ public class MiServicioPreguntas extends Service {
 	private String loginusuario;
 	private String asignat;
     private SharedPreferences prefs;
-    
-
-    
+   
 	// url to make request
 	private static String url;
 	
@@ -295,8 +293,7 @@ public class MiServicioPreguntas extends Service {
 	    		
 	    		mensaje = tarea.split("[.]")[1]+ Integer.toString(contadorAppsOciosas)+"a amigos "+Integer.toString(nPreguntasEnviadasAmigospantalla)+"extras "+Integer.toString(contadorPreguntasExtraAldiapantalla);
 	    		handler.post(toast);*/
-	    		
-	    		
+
 	    		
 	    		app = tarea.split("[.]")[1];	    		
 	            prefs = PreferenceManager.getDefaultSharedPreferences(MiServicioPreguntas.this);
